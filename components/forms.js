@@ -2,7 +2,7 @@
 /* eslint-disable react/no-unescaped-entities */
 
 import Link from "next/link";
-import { ArrowRight, Building2, CheckCircle2, Clapperboard, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, CheckCircle2, Clapperboard, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { api } from "../lib/api";
 
@@ -116,6 +116,22 @@ function WorkspaceTypeButton({ option, active, onClick }) {
   );
 }
 
+const wizardSteps = [
+  { label: "Workspace", title: "Choose workspace type" },
+  { label: "Organization", title: "Who is requesting access?" },
+  { label: "Setup", title: "What should this workspace include?" },
+  { label: "Review", title: "Review and send request" },
+];
+
+function ReviewRow({ label, value }) {
+  return (
+    <div className="rounded-xl border border-[#dbe8f6] bg-[#f8fbff] p-3">
+      <p className="text-[11px] font-black uppercase tracking-[.14em] text-[#6b7c90]">{label}</p>
+      <p className="mt-1 break-words text-sm font-bold text-[#11243d]">{value || "Not provided"}</p>
+    </div>
+  );
+}
+
 export function AuthForm({ mode }) {
   const [form, setForm] = useState({ name: "", email: "", password: "", token: "" }); const [error, setError] = useState(""); const [loading, setLoading] = useState(false);
   async function submit(event) { event.preventDefault(); setLoading(true); setError(""); try { const data = mode === "login" ? await api.login({ email: form.email, password: form.password }) : mode === "register" ? await api.register(form) : await api.acceptInvite({ token: form.token, password: form.password }); localStorage.setItem("manthanos_token", data.token); const profile = await api.me(data.token); const membership = profile.memberships?.[0]; const role = membership?.role?.name?.toLowerCase() || "employee"; window.location.href = role.includes("admin") || membership?.isOwner ? (process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001") : (process.env.NEXT_PUBLIC_EMPLOYEE_URL || "http://localhost:3002"); } catch (err) { setError(err.message); setLoading(false); } }
@@ -153,16 +169,42 @@ export function PublicWorkspaceApplicationForm() {
   const [type, setType] = useState("CREATOR");
   const [form, setForm] = useState(workspaceApplicationInitial);
   const [state, setState] = useState({ loading: false, done: false, error: "" });
+  const [step, setStep] = useState(0);
   const activeOption = workspaceTypeOptions[type];
   const update = (event) => setForm({ ...form, [event.target.name]: event.target.value });
+  const totalSteps = wizardSteps.length;
+  const useCaseReady = form.useCase.trim().length >= 20;
+  const canContinue = step === 0
+    || (step === 1 && form.organizationName.trim() && form.applicantName.trim() && form.email.trim() && Number(form.teamSize) >= 1)
+    || (step === 2 && useCaseReady && (type === "CREATOR" ? form.creatorNiche.trim() : form.companyKind && form.industry.trim()))
+    || step === 3;
+
+  const nextStep = () => {
+    setState({ loading: false, done: false, error: "" });
+    if (!canContinue) {
+      setState({ loading: false, done: false, error: "Complete the visible fields before moving to the next step." });
+      return;
+    }
+    setStep((current) => Math.min(current + 1, totalSteps - 1));
+  };
+
+  const previousStep = () => {
+    setState({ loading: false, done: false, error: "" });
+    setStep((current) => Math.max(current - 1, 0));
+  };
 
   const submit = async (event) => {
     event.preventDefault();
+    if (step !== totalSteps - 1) {
+      nextStep();
+      return;
+    }
     setState({ loading: true, done: false, error: "" });
     try {
       await api.applyForWorkspace(buildWorkspaceApplicationPayload(type, form));
       setState({ loading: false, done: true, error: "" });
       setForm(workspaceApplicationInitial);
+      setStep(0);
     } catch (error) {
       setState({ loading: false, done: false, error: error.message });
     }
@@ -181,97 +223,149 @@ export function PublicWorkspaceApplicationForm() {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-6">
-      {state.error ? <p className="rounded-xl border border-[#ffd4d4] bg-[#fff0f0] p-4 text-sm font-medium text-[#b42318]">{state.error}</p> : null}
-
-      <section aria-label="Workspace type" className="space-y-3">
-        <div className="flex items-end justify-between gap-4">
+    <form onSubmit={submit} className="flex min-h-[620px] flex-col">
+      <div className="mb-6">
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-black uppercase tracking-[.18em] text-[#0b63ce]">Step 1</p>
-            <h2 className="mt-1 text-lg font-black text-[#11243d]">Select workspace type</h2>
+            <p className="text-xs font-black uppercase tracking-[.18em] text-[#0b63ce]">Step {step + 1} of {totalSteps}</p>
+            <h2 className="mt-1 text-xl font-black text-[#11243d]">{wizardSteps[step].title}</h2>
           </div>
-          <span className="hidden text-xs font-bold text-[#607086] sm:inline">Public request API</span>
+          <span className="rounded-full border border-[#c9def4] bg-[#f7fbff] px-3 py-1 text-xs font-bold text-[#244968]">{wizardSteps[step].label}</span>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {Object.entries(workspaceTypeOptions).map(([value, option]) => (
-            <WorkspaceTypeButton key={value} option={option} active={type === value} onClick={() => setType(value)} />
-          ))}
-        </div>
-      </section>
-
-      <div className="rounded-2xl border border-[#dbe8f6] bg-[#f7fbff] p-5">
-        <p className="text-sm leading-6 text-[#4b5d73]">{activeOption.intro}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {activeOption.features.map((feature) => (
-            <span key={feature} className="rounded-full border border-[#c9def4] bg-white px-3 py-1 text-xs font-bold text-[#244968]">{feature}</span>
+        <div className="mt-4 grid grid-cols-4 gap-2">
+          {wizardSteps.map((item, index) => (
+            <span key={item.label} className={`h-2 rounded-full ${index <= step ? "bg-[#0b63ce]" : "bg-[#dbe8f6]"}`} />
           ))}
         </div>
       </div>
 
-      <section className="space-y-4" aria-label="Organization details">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[.18em] text-[#0b63ce]">Step 2</p>
-          <h2 className="mt-1 text-lg font-black text-[#11243d]">Organization details</h2>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={type === "CREATOR" ? "Creator or brand name" : "Company name"} name="organizationName" value={form.organizationName} onChange={update} required />
-          <Field label="Preferred workspace slug" name="desiredSlug" value={form.desiredSlug} onChange={update} pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="northstar-media" />
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Your name" name="applicantName" value={form.applicantName} onChange={update} required />
-          <Field label="Work email" name="email" type="email" value={form.email} onChange={update} required />
-        </div>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="Phone" name="phone" value={form.phone} onChange={update} />
-          <Field label="Website" name="website" type="url" value={form.website} onChange={update} placeholder="https://" />
-          <Field label="Team size" name="teamSize" type="number" min="1" value={form.teamSize} onChange={update} required />
-        </div>
-      </section>
+      {state.error ? <p className="rounded-xl border border-[#ffd4d4] bg-[#fff0f0] p-4 text-sm font-medium text-[#b42318]">{state.error}</p> : null}
 
-      <section className="space-y-4" aria-label="Workspace setup">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[.18em] text-[#0b63ce]">Step 3</p>
-          <h2 className="mt-1 text-lg font-black text-[#11243d]">{type === "CREATOR" ? "Creator setup" : "Company setup"}</h2>
-        </div>
-        {type === "CREATOR" ? (
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field label="Creator niche" name="creatorNiche" value={form.creatorNiche} onChange={update} placeholder="Tech education" required />
-            <Field label="Platforms" name="primaryPlatforms" value={form.primaryPlatforms} onChange={update} placeholder="YouTube, Instagram" />
-            <Field label="Posts per month" name="monthlyOutput" type="number" min="0" value={form.monthlyOutput} onChange={update} />
-          </div>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block text-sm font-medium text-[#17304d]">Company type
-              <select name="companyKind" value={form.companyKind} onChange={update} className="mt-2 w-full rounded-xl border border-[#cdd9e6] bg-slate-50/50 px-4 py-3 outline-none transition-all duration-200 focus:border-[#1677ff] focus:bg-white focus:ring-4 focus:ring-[#1677ff]/10">
-                <option value="STARTUP">Startup</option>
-                <option value="ENTERPRISE">Enterprise / big tech</option>
-                <option value="CONSULTANCY">Consultancy</option>
-                <option value="AGENCY">Agency</option>
-                <option value="OTHER">Other</option>
-              </select>
+      <div className="flex-1">
+        {step === 0 ? (
+          <section aria-label="Workspace type" className="space-y-5">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {Object.entries(workspaceTypeOptions).map(([value, option]) => (
+                <WorkspaceTypeButton key={value} option={option} active={type === value} onClick={() => setType(value)} />
+              ))}
+            </div>
+            <div className="rounded-2xl border border-[#dbe8f6] bg-[#f7fbff] p-5">
+              <p className="text-sm leading-6 text-[#4b5d73]">{activeOption.intro}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {activeOption.features.map((feature) => (
+                  <span key={feature} className="rounded-full border border-[#c9def4] bg-white px-3 py-1 text-xs font-bold text-[#244968]">{feature}</span>
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        {step === 1 ? (
+          <section className="space-y-4" aria-label="Organization details">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label={type === "CREATOR" ? "Creator or brand name" : "Company name"} name="organizationName" value={form.organizationName} onChange={update} required />
+              <Field label="Preferred workspace slug" name="desiredSlug" value={form.desiredSlug} onChange={update} pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="northstar-media" />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Your name" name="applicantName" value={form.applicantName} onChange={update} required />
+              <Field label="Work email" name="email" type="email" value={form.email} onChange={update} required />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Field label="Phone" name="phone" value={form.phone} onChange={update} />
+              <Field label="Website" name="website" type="url" value={form.website} onChange={update} placeholder="https://" />
+              <Field label="Team size" name="teamSize" type="number" min="1" value={form.teamSize} onChange={update} required />
+            </div>
+          </section>
+        ) : null}
+
+        {step === 2 ? (
+          <section className="space-y-4" aria-label="Workspace setup">
+            {type === "CREATOR" ? (
+              <div className="grid gap-4 sm:grid-cols-3">
+                <Field label="Creator niche" name="creatorNiche" value={form.creatorNiche} onChange={update} placeholder="Tech education" required />
+                <Field label="Platforms" name="primaryPlatforms" value={form.primaryPlatforms} onChange={update} placeholder="YouTube, Instagram" />
+                <Field label="Posts per month" name="monthlyOutput" type="number" min="0" value={form.monthlyOutput} onChange={update} />
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block text-sm font-medium text-[#17304d]">Company type
+                  <select name="companyKind" value={form.companyKind} onChange={update} className="mt-2 w-full rounded-xl border border-[#cdd9e6] bg-slate-50/50 px-4 py-3 outline-none transition-all duration-200 focus:border-[#1677ff] focus:bg-white focus:ring-4 focus:ring-[#1677ff]/10">
+                    <option value="STARTUP">Startup</option>
+                    <option value="ENTERPRISE">Enterprise / big tech</option>
+                    <option value="CONSULTANCY">Consultancy</option>
+                    <option value="AGENCY">Agency</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </label>
+                <Field label="Industry" name="industry" value={form.industry} onChange={update} placeholder="Software, consulting, media" required />
+              </div>
+            )}
+            <label className="block text-sm font-medium text-[#17304d]">How will your team use ManthanOS?
+              <textarea
+                name="useCase"
+                value={form.useCase}
+                onChange={update}
+                minLength="20"
+                rows="7"
+                required
+                className="mt-2 w-full resize-none rounded-xl border border-[#cdd9e6] bg-white px-4 py-3 outline-none transition-all duration-200 focus:border-[#1677ff] focus:ring-4 focus:ring-[#1677ff]/10"
+                placeholder={type === "CREATOR" ? "Describe your content workflow and team..." : "Describe your CRM, projects, departments, and approval workflow..."}
+              />
             </label>
-            <Field label="Industry" name="industry" value={form.industry} onChange={update} placeholder="Software, consulting, media" required />
-          </div>
-        )}
-        <label className="block text-sm font-medium text-[#17304d]">How will your team use ManthanOS?
-          <textarea
-            name="useCase"
-            value={form.useCase}
-            onChange={update}
-            minLength="20"
-            rows="5"
-            required
-            className="mt-2 w-full resize-none rounded-xl border border-[#cdd9e6] bg-white px-4 py-3 outline-none transition-all duration-200 focus:border-[#1677ff] focus:ring-4 focus:ring-[#1677ff]/10"
-            placeholder={type === "CREATOR" ? "Describe your content workflow and team..." : "Describe your CRM, projects, departments, and approval workflow..."}
-          />
-        </label>
-      </section>
+            <p className="text-xs font-semibold text-[#64748b]">Minimum 20 characters. This helps superadmin create the right workspace features.</p>
+          </section>
+        ) : null}
 
-      <div className="rounded-2xl border border-[#dbe8f6] bg-white p-4 shadow-[0_16px_45px_rgba(17,36,61,.07)]">
-        <button disabled={state.loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0b63ce] px-5 py-3.5 font-bold text-white transition hover:bg-[#084fa5] disabled:cursor-not-allowed disabled:opacity-60">
-          {state.loading ? <Loader2 className="animate-spin" size={18} aria-hidden="true" /> : <ArrowRight size={18} aria-hidden="true" />}
-          {state.loading ? "Submitting..." : `Request ${type === "CREATOR" ? "creator" : "company"} workspace`}
-        </button>
+        {step === 3 ? (
+          <section className="space-y-4" aria-label="Review workspace request">
+            <div className="rounded-2xl border border-[#dbe8f6] bg-[#f7fbff] p-5">
+              <p className="text-sm leading-6 text-[#4b5d73]">Check the request before sending it to the superadmin review queue.</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {activeOption.features.map((feature) => (
+                  <span key={feature} className="rounded-full border border-[#c9def4] bg-white px-3 py-1 text-xs font-bold text-[#244968]">{feature}</span>
+                ))}
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <ReviewRow label="Workspace type" value={activeOption.label} />
+              <ReviewRow label="Organization" value={form.organizationName} />
+              <ReviewRow label="Applicant" value={form.applicantName} />
+              <ReviewRow label="Email" value={form.email} />
+              <ReviewRow label={type === "CREATOR" ? "Creator niche" : "Industry"} value={type === "CREATOR" ? form.creatorNiche : form.industry} />
+              <ReviewRow label="Team size" value={form.teamSize} />
+            </div>
+          </section>
+        ) : null}
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-[#dbe8f6] bg-white p-3 shadow-[0_16px_45px_rgba(17,36,61,.07)]">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            type="button"
+            onClick={previousStep}
+            disabled={step === 0 || state.loading}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#cdd9e6] px-5 py-3 text-sm font-bold text-[#38536f] transition hover:bg-[#f7fbff] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <ArrowLeft size={17} aria-hidden="true" />
+            Back
+          </button>
+          {step < totalSteps - 1 ? (
+            <button
+              type="button"
+              onClick={nextStep}
+              disabled={!canContinue || state.loading}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0b63ce] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#084fa5] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Continue
+              <ArrowRight size={17} aria-hidden="true" />
+            </button>
+          ) : (
+            <button disabled={state.loading} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0b63ce] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#084fa5] disabled:cursor-not-allowed disabled:opacity-60">
+              {state.loading ? <Loader2 className="animate-spin" size={18} aria-hidden="true" /> : <ArrowRight size={18} aria-hidden="true" />}
+              {state.loading ? "Submitting..." : `Request ${type === "CREATOR" ? "creator" : "company"} workspace`}
+            </button>
+          )}
+        </div>
         <p className="mt-3 text-center text-xs leading-5 text-[#64748b]">Your request goes to the superadmin review queue before any workspace is created.</p>
       </div>
     </form>

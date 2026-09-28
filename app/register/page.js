@@ -15,8 +15,8 @@ export default function Register() {
     <main className="min-h-screen bg-[#eef4fb] px-3 py-4 sm:px-6 sm:py-8 lg:py-10">
       <div className="mx-auto w-full max-w-7xl">
         <div className="mb-5 flex items-center justify-center sm:mb-6">
-          <Link href="/" aria-label="ManthanOS home" className="inline-flex items-center">
-            <Image src="/dark_logo.png" alt="ManthanOS" width={186} height={56} priority className="h-10 w-auto sm:h-12" />
+          <Link href="/" aria-label="ManthanOS home" className="inline-flex items-center rounded-2xl bg-[#0b2545] px-5 py-3 shadow-[0_18px_45px_rgba(11,37,69,.16)]">
+            <Image src="/light_logo.png" alt="ManthanOS" width={186} height={56} priority className="h-9 w-auto sm:h-10" />
           </Link>
         </div>
         <div className="grid overflow-hidden rounded-[24px] border border-[#d9e4f0] bg-white shadow-[0_28px_90px_rgba(23,48,77,.10)] lg:grid-cols-[390px_1fr] xl:grid-cols-[420px_1fr]">
