@@ -2,6 +2,7 @@
 /* eslint-disable react/no-unescaped-entities */
 
 import Link from "next/link";
+import { ArrowRight, Building2, CheckCircle2, Clapperboard, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { api } from "../lib/api";
 
@@ -74,6 +75,47 @@ function buildWorkspaceApplicationPayload(type, form) {
   };
 }
 
+const workspaceTypeOptions = {
+  CREATOR: {
+    label: "Creator team",
+    subtitle: "Studios, creators, editors, managers",
+    Icon: Clapperboard,
+    intro: "For creators managing ideas, scripts, publishing, brand deals, content analytics, and a compact production crew.",
+    features: ["Scripts", "Publishing calendar", "Brand deals", "Creator analytics"],
+  },
+  COMPANY: {
+    label: "Company",
+    subtitle: "Agencies, consultancies, startups, enterprise",
+    Icon: Building2,
+    intro: "For teams managing CRM, client delivery, departments, approvals, employee phases, and larger operating workflows.",
+    features: ["CRM", "Departments", "Project phases", "Team permissions"],
+  },
+};
+
+function WorkspaceTypeButton({ option, active, onClick }) {
+  const Icon = option.Icon;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex min-h-28 items-start gap-3 rounded-xl border p-4 text-left transition focus:outline-none focus:ring-4 focus:ring-[#1677ff]/15 ${
+        active
+          ? "border-[#0b63ce] bg-[#eef6ff] shadow-[0_12px_30px_rgba(11,99,206,.13)]"
+          : "border-[#d6e2ef] bg-white hover:border-[#9ec8f4]"
+      }`}
+      aria-pressed={active}
+    >
+      <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#0b63ce] text-white" : "bg-[#edf3fb] text-[#38536f]"}`}>
+        <Icon size={20} aria-hidden="true" />
+      </span>
+      <span>
+        <span className="block text-sm font-black text-[#11243d]">{option.label}</span>
+        <span className="mt-1 block text-xs leading-5 text-[#607086]">{option.subtitle}</span>
+      </span>
+    </button>
+  );
+}
+
 export function AuthForm({ mode }) {
   const [form, setForm] = useState({ name: "", email: "", password: "", token: "" }); const [error, setError] = useState(""); const [loading, setLoading] = useState(false);
   async function submit(event) { event.preventDefault(); setLoading(true); setError(""); try { const data = mode === "login" ? await api.login({ email: form.email, password: form.password }) : mode === "register" ? await api.register(form) : await api.acceptInvite({ token: form.token, password: form.password }); localStorage.setItem("manthanos_token", data.token); const profile = await api.me(data.token); const membership = profile.memberships?.[0]; const role = membership?.role?.name?.toLowerCase() || "employee"; window.location.href = role.includes("admin") || membership?.isOwner ? (process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001") : (process.env.NEXT_PUBLIC_EMPLOYEE_URL || "http://localhost:3002"); } catch (err) { setError(err.message); setLoading(false); } }
@@ -105,6 +147,135 @@ export function WorkspaceApplicationForm() {
     <label className="block text-sm font-medium text-[#17304d]">How will your team use ManthanOS?<textarea name="useCase" value={form.useCase} onChange={update} minLength="20" rows="5" required className="mt-2 w-full resize-none rounded-xl border border-[#cdd9e6] bg-white px-4 py-3 outline-none focus:border-[#1677ff]" placeholder={type === "CREATOR" ? "Describe your content workflow and team…" : "Describe your CRM, projects, departments, and approval workflow…"} /></label>
     <button disabled={state.loading} className="w-full rounded-full bg-[#0b63ce] px-5 py-3 font-semibold text-white transition hover:bg-[#084fa5] disabled:opacity-60">{state.loading ? "Submitting…" : `Request ${type === "CREATOR" ? "creator" : "company"} workspace`}</button>
   </form>;
+}
+
+export function PublicWorkspaceApplicationForm() {
+  const [type, setType] = useState("CREATOR");
+  const [form, setForm] = useState(workspaceApplicationInitial);
+  const [state, setState] = useState({ loading: false, done: false, error: "" });
+  const activeOption = workspaceTypeOptions[type];
+  const update = (event) => setForm({ ...form, [event.target.name]: event.target.value });
+
+  const submit = async (event) => {
+    event.preventDefault();
+    setState({ loading: true, done: false, error: "" });
+    try {
+      await api.applyForWorkspace(buildWorkspaceApplicationPayload(type, form));
+      setState({ loading: false, done: true, error: "" });
+      setForm(workspaceApplicationInitial);
+    } catch (error) {
+      setState({ loading: false, done: false, error: error.message });
+    }
+  };
+
+  if (state.done) {
+    return (
+      <div className="rounded-2xl border border-[#b9e6cf] bg-[#effbf4] p-8 text-center shadow-[0_20px_60px_rgba(28,155,92,.10)]">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#1c9b5c] text-white">
+          <CheckCircle2 size={24} aria-hidden="true" />
+        </div>
+        <h2 className="display-font mt-4 text-2xl font-bold text-slate-900">Application received</h2>
+        <p className="mt-2 text-sm leading-6 text-[#52647a]">A ManthanOS administrator will review your request. Owner access details arrive by email after approval.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-6">
+      {state.error ? <p className="rounded-xl border border-[#ffd4d4] bg-[#fff0f0] p-4 text-sm font-medium text-[#b42318]">{state.error}</p> : null}
+
+      <section aria-label="Workspace type" className="space-y-3">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[.18em] text-[#0b63ce]">Step 1</p>
+            <h2 className="mt-1 text-lg font-black text-[#11243d]">Select workspace type</h2>
+          </div>
+          <span className="hidden text-xs font-bold text-[#607086] sm:inline">Public request API</span>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {Object.entries(workspaceTypeOptions).map(([value, option]) => (
+            <WorkspaceTypeButton key={value} option={option} active={type === value} onClick={() => setType(value)} />
+          ))}
+        </div>
+      </section>
+
+      <div className="rounded-2xl border border-[#dbe8f6] bg-[#f7fbff] p-5">
+        <p className="text-sm leading-6 text-[#4b5d73]">{activeOption.intro}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {activeOption.features.map((feature) => (
+            <span key={feature} className="rounded-full border border-[#c9def4] bg-white px-3 py-1 text-xs font-bold text-[#244968]">{feature}</span>
+          ))}
+        </div>
+      </div>
+
+      <section className="space-y-4" aria-label="Organization details">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[.18em] text-[#0b63ce]">Step 2</p>
+          <h2 className="mt-1 text-lg font-black text-[#11243d]">Organization details</h2>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={type === "CREATOR" ? "Creator or brand name" : "Company name"} name="organizationName" value={form.organizationName} onChange={update} required />
+          <Field label="Preferred workspace slug" name="desiredSlug" value={form.desiredSlug} onChange={update} pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="northstar-media" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Your name" name="applicantName" value={form.applicantName} onChange={update} required />
+          <Field label="Work email" name="email" type="email" value={form.email} onChange={update} required />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Field label="Phone" name="phone" value={form.phone} onChange={update} />
+          <Field label="Website" name="website" type="url" value={form.website} onChange={update} placeholder="https://" />
+          <Field label="Team size" name="teamSize" type="number" min="1" value={form.teamSize} onChange={update} required />
+        </div>
+      </section>
+
+      <section className="space-y-4" aria-label="Workspace setup">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[.18em] text-[#0b63ce]">Step 3</p>
+          <h2 className="mt-1 text-lg font-black text-[#11243d]">{type === "CREATOR" ? "Creator setup" : "Company setup"}</h2>
+        </div>
+        {type === "CREATOR" ? (
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Field label="Creator niche" name="creatorNiche" value={form.creatorNiche} onChange={update} placeholder="Tech education" required />
+            <Field label="Platforms" name="primaryPlatforms" value={form.primaryPlatforms} onChange={update} placeholder="YouTube, Instagram" />
+            <Field label="Posts per month" name="monthlyOutput" type="number" min="0" value={form.monthlyOutput} onChange={update} />
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block text-sm font-medium text-[#17304d]">Company type
+              <select name="companyKind" value={form.companyKind} onChange={update} className="mt-2 w-full rounded-xl border border-[#cdd9e6] bg-slate-50/50 px-4 py-3 outline-none transition-all duration-200 focus:border-[#1677ff] focus:bg-white focus:ring-4 focus:ring-[#1677ff]/10">
+                <option value="STARTUP">Startup</option>
+                <option value="ENTERPRISE">Enterprise / big tech</option>
+                <option value="CONSULTANCY">Consultancy</option>
+                <option value="AGENCY">Agency</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </label>
+            <Field label="Industry" name="industry" value={form.industry} onChange={update} placeholder="Software, consulting, media" required />
+          </div>
+        )}
+        <label className="block text-sm font-medium text-[#17304d]">How will your team use ManthanOS?
+          <textarea
+            name="useCase"
+            value={form.useCase}
+            onChange={update}
+            minLength="20"
+            rows="5"
+            required
+            className="mt-2 w-full resize-none rounded-xl border border-[#cdd9e6] bg-white px-4 py-3 outline-none transition-all duration-200 focus:border-[#1677ff] focus:ring-4 focus:ring-[#1677ff]/10"
+            placeholder={type === "CREATOR" ? "Describe your content workflow and team..." : "Describe your CRM, projects, departments, and approval workflow..."}
+          />
+        </label>
+      </section>
+
+      <div className="rounded-2xl border border-[#dbe8f6] bg-white p-4 shadow-[0_16px_45px_rgba(17,36,61,.07)]">
+        <button disabled={state.loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0b63ce] px-5 py-3.5 font-bold text-white transition hover:bg-[#084fa5] disabled:cursor-not-allowed disabled:opacity-60">
+          {state.loading ? <Loader2 className="animate-spin" size={18} aria-hidden="true" /> : <ArrowRight size={18} aria-hidden="true" />}
+          {state.loading ? "Submitting..." : `Request ${type === "CREATOR" ? "creator" : "company"} workspace`}
+        </button>
+        <p className="mt-3 text-center text-xs leading-5 text-[#64748b]">Your request goes to the superadmin review queue before any workspace is created.</p>
+      </div>
+    </form>
+  );
 }
 
 export function TesterForm() {
