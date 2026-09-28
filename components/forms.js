@@ -22,6 +22,58 @@ export function LeadForm({ demo = false }) {
 
 function Field({ label, ...props }) { return <label className="block text-sm font-medium text-[#17304d] mb-1">{label}<input {...props} className="mt-2 w-full rounded-xl border border-[#cdd9e6] bg-slate-50/50 px-4 py-3 outline-none focus:border-[#1677ff] focus:bg-white focus:ring-4 focus:ring-[#1677ff]/10 transition-all duration-200" /></label>; }
 
+const workspaceApplicationInitial = {
+  organizationName: "",
+  desiredSlug: "",
+  applicantName: "",
+  email: "",
+  phone: "",
+  website: "",
+  teamSize: 1,
+  creatorNiche: "",
+  primaryPlatforms: "YouTube",
+  monthlyOutput: 4,
+  companyKind: "STARTUP",
+  industry: "",
+  useCase: "",
+};
+
+function optionalText(value) {
+  const trimmed = String(value || "").trim();
+  return trimmed ? trimmed : undefined;
+}
+
+function buildWorkspaceApplicationPayload(type, form) {
+  const common = {
+    type,
+    organizationName: form.organizationName.trim(),
+    desiredSlug: optionalText(form.desiredSlug),
+    applicantName: form.applicantName.trim(),
+    email: form.email.trim(),
+    phone: optionalText(form.phone),
+    website: optionalText(form.website),
+    teamSize: Number(form.teamSize),
+    primaryPlatforms: type === "CREATOR"
+      ? form.primaryPlatforms.split(",").map((item) => item.trim()).filter(Boolean)
+      : [],
+    useCase: form.useCase.trim(),
+  };
+
+  if (type === "CREATOR") {
+    return {
+      ...common,
+      creatorNiche: form.creatorNiche.trim(),
+      monthlyOutput: Number(form.monthlyOutput),
+    };
+  }
+
+  return {
+    ...common,
+    companyKind: form.companyKind,
+    industry: form.industry.trim(),
+  };
+}
+
 export function AuthForm({ mode }) {
   const [form, setForm] = useState({ name: "", email: "", password: "", token: "" }); const [error, setError] = useState(""); const [loading, setLoading] = useState(false);
   async function submit(event) { event.preventDefault(); setLoading(true); setError(""); try { const data = mode === "login" ? await api.login({ email: form.email, password: form.password }) : mode === "register" ? await api.register(form) : await api.acceptInvite({ token: form.token, password: form.password }); localStorage.setItem("manthanos_token", data.token); const profile = await api.me(data.token); const membership = profile.memberships?.[0]; const role = membership?.role?.name?.toLowerCase() || "employee"; window.location.href = role.includes("admin") || membership?.isOwner ? (process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001") : (process.env.NEXT_PUBLIC_EMPLOYEE_URL || "http://localhost:3002"); } catch (err) { setError(err.message); setLoading(false); } }
@@ -30,14 +82,15 @@ export function AuthForm({ mode }) {
 
 export function WorkspaceApplicationForm() {
   const [type, setType] = useState("CREATOR");
-  const [form, setForm] = useState({ organizationName: "", desiredSlug: "", applicantName: "", email: "", phone: "", website: "", teamSize: 1, creatorNiche: "", primaryPlatforms: "YouTube", monthlyOutput: 4, companyKind: "STARTUP", industry: "", useCase: "" });
+  const [form, setForm] = useState(workspaceApplicationInitial);
   const [state, setState] = useState({ loading: false, done: false, error: "" });
   const update = (event) => setForm({ ...form, [event.target.name]: event.target.value });
   const submit = async (event) => {
     event.preventDefault(); setState({ loading: true, done: false, error: "" });
     try {
-      await api.applyForWorkspace({ ...form, type, teamSize: Number(form.teamSize), monthlyOutput: type === "CREATOR" ? Number(form.monthlyOutput) : undefined, primaryPlatforms: type === "CREATOR" ? form.primaryPlatforms.split(",").map((item) => item.trim()).filter(Boolean) : [] });
+      await api.applyForWorkspace(buildWorkspaceApplicationPayload(type, form));
       setState({ loading: false, done: true, error: "" });
+      setForm(workspaceApplicationInitial);
     } catch (error) { setState({ loading: false, done: false, error: error.message }); }
   };
   if (state.done) return <div className="rounded-2xl border border-[#b9e6cf] bg-[#effbf4] p-8 text-center"><div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#1c9b5c] font-bold text-white">✓</div><h2 className="display-font mt-4 text-2xl font-bold text-slate-900">Application received</h2><p className="mt-2 text-sm text-[#52647a]">A ManthanOS administrator will review your workspace request. Owner access details arrive by email after approval.</p></div>;
