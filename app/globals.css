@@ -1121,6 +1121,110 @@
 }
 
 /* -------------------------------------------------------------------------
+   Workspace comparison
+
+   The crisp icon tiles and dotted route make each card read as an operating
+   lane, not a generic feature panel. The glyphs stay white for clarity while
+   the tile edge and glow inherit each workspace's semantic accent.
+   ---------------------------------------------------------------------- */
+.workspace-lane-card {
+  box-shadow: 0 24px 70px -42px rgba(0, 0, 0, .95), inset 0 1px 0 rgba(255, 255, 255, .035);
+}
+
+.workspace-lane-icon {
+  position: relative;
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+}
+
+.workspace-lane-icon__face {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, currentColor 58%, rgba(255,255,255,.25));
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.16), transparent 42%),
+    color-mix(in srgb, currentColor 22%, #111a2c);
+  box-shadow:
+    0 12px 24px -10px rgba(0, 0, 0, .82),
+    inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+.workspace-lane-icon__face > svg {
+  color: #fff;
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,.35));
+}
+
+.workspace-journey__step {
+  isolation: isolate;
+}
+
+.workspace-journey {
+  border: 1px solid rgba(255, 255, 255, .055);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, .18), rgba(255, 255, 255, .018));
+  box-shadow:
+    inset 0 2px 10px rgba(0, 0, 0, .5),
+    inset 0 -1px 0 rgba(255, 255, 255, .035),
+    0 1px 0 rgba(255, 255, 255, .025);
+}
+
+.workspace-journey__step::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 7px;
+  left: 8px;
+  width: calc(100% + 1rem);
+  border-top: 1px dashed color-mix(in srgb, currentColor 20%, transparent);
+}
+
+.workspace-journey__step:nth-child(2n)::before,
+.workspace-journey__step:last-child::before {
+  display: none;
+}
+
+.workspace-journey__node {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 16px;
+  padding-right: 8px;
+  background: color-mix(in srgb, var(--color-ink-850) 86%, #000);
+}
+
+.workspace-journey__dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-ink-850) 78%, #000);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, currentColor 10%, transparent),
+    0 5px 10px rgba(0, 0, 0, .65),
+    inset 0 1px 2px rgba(255, 255, 255, .22);
+}
+
+@media (min-width: 640px) {
+  .workspace-journey__step::before {
+    width: calc(100% + 1rem);
+  }
+
+  .workspace-journey__step:nth-child(2n)::before {
+    display: block;
+  }
+
+  .workspace-journey__step:last-child::before {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------------------------
    Homepage scale system
 
    The marketing page is intentionally built as a sequence of large scenes,
@@ -1224,4 +1328,107 @@ main > section:last-child,
     0%, 100% { filter: brightness(.92); }
     50% { filter: brightness(1.14); }
   }
+}
+
+/* -------------------------------------------------------------------------
+   Workspace application — bright decision room
+
+   Registration is a considered setup moment, not another marketing panel.
+   The paper-white surface and dashed process rails make the two workspace
+   models easy to scan while the dimensional icons keep ManthanOS's tactile
+   product language intact.
+   ---------------------------------------------------------------------- */
+.auth-content {
+  background:
+    radial-gradient(circle at 88% 6%, rgba(36, 95, 245, .07), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #f7f9fd 100%);
+  color: #14213a;
+}
+
+.auth-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .38;
+  background-image: radial-gradient(#91a0b8 .7px, transparent .7px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, #000, transparent 42%);
+}
+
+.auth-content-inner { position: relative; z-index: 1; width: min(100%, 780px); }
+.auth-content h1 { color: #13203a; }
+.auth-content h1 span { color: #245ff5; }
+.auth-form-slot { margin-top: 22px; }
+.auth-form-slot form > div { border-color: #dce3ee; }
+
+.apply-step-header { padding-bottom: 20px; border-bottom: 1px solid #dce3ee; }
+.apply-step-count { color: #245ff5; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.apply-step-header h2 { margin-top: 5px; color: #14213a; font-size: 26px; font-weight: 750; line-height: 1.2; }
+.apply-step-header > p:last-child { margin-top: 5px; color: #65738a; font-size: 14px; line-height: 1.55; }
+.apply-error { margin-top: 16px; padding: 12px 16px; border: 1px solid #fecaca; border-radius: 12px; background: #fff5f5; color: #b42318; font-size: 14px; font-weight: 650; }
+
+.workspace-choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.workspace-choice-card {
+  --workspace-accent: #245ff5;
+  --workspace-soft: #edf3ff;
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 390px;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 22px;
+  overflow: hidden;
+  border: 1px dashed #b9c6da;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .87);
+  color: #15213a;
+  text-align: left;
+  box-shadow: 0 16px 42px -34px rgba(31, 54, 96, .45);
+  transition: transform 220ms var(--ease-out), border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+}
+.workspace-choice-card[data-tone="company"] { --workspace-accent: #eb5570; --workspace-soft: #fff0f3; }
+.workspace-choice-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--workspace-accent) 48%, #b9c6da); box-shadow: 0 24px 48px -32px rgba(31, 54, 96, .42); }
+.workspace-choice-card[data-active="true"] { border-style: solid; border-color: var(--workspace-accent); background: linear-gradient(145deg, #fff, var(--workspace-soft)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--workspace-accent) 10%, transparent), 0 24px 50px -32px color-mix(in srgb, var(--workspace-accent) 58%, transparent); }
+.workspace-choice-topline { display: flex; align-items: flex-start; justify-content: space-between; }
+.workspace-choice-icon { position: relative; display: grid; width: 56px; height: 56px; place-items: center; border: 1px solid color-mix(in srgb, var(--workspace-accent) 35%, transparent); border-radius: 16px; background: linear-gradient(145deg, #fff, var(--workspace-soft)); color: var(--workspace-accent); box-shadow: inset 2px 2px 0 #fff, inset -4px -5px 8px color-mix(in srgb, var(--workspace-accent) 15%, transparent), 0 7px 0 color-mix(in srgb, var(--workspace-accent) 20%, #d8e1ef), 0 16px 22px -12px color-mix(in srgb, var(--workspace-accent) 58%, transparent); transform: rotate(-5deg); }
+.workspace-choice-icon svg { filter: drop-shadow(0 2px 1px rgba(38, 55, 90, .18)); transform: rotate(5deg); }
+.workspace-choice-check { display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid #ccd5e3; border-radius: 50%; background: #fff; color: transparent; transition: .2s ease; }
+.workspace-choice-card[data-active="true"] .workspace-choice-check { border-color: var(--workspace-accent); background: var(--workspace-accent); color: #fff; }
+.workspace-choice-kicker { margin-top: 25px; color: var(--workspace-accent); font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.workspace-choice-card > strong { margin-top: 7px; font-size: 22px; letter-spacing: -.035em; }
+.workspace-choice-copy { margin-top: 9px; color: #65738a; font-size: 13px; line-height: 1.55; }
+.workspace-choice-journey { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 21px; padding-top: 19px; border-top: 1px solid #e1e7f0; }
+.workspace-choice-step { position: relative; display: flex; min-width: 0; flex-direction: column; gap: 8px; color: var(--workspace-accent); }
+.workspace-choice-step:not(:last-child)::after { content: ""; position: absolute; top: 5px; left: 24px; width: calc(100% - 16px); border-top: 1px dashed color-mix(in srgb, var(--workspace-accent) 30%, transparent); }
+.workspace-choice-step i { position: relative; z-index: 1; width: fit-content; padding-right: 5px; background: color-mix(in srgb, var(--workspace-soft) 45%, #fff); font-family: var(--font-mono); font-size: 9px; font-style: normal; font-weight: 700; }
+.workspace-choice-step i::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 5px; border: 2px solid currentColor; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px color-mix(in srgb, var(--workspace-accent) 10%, transparent); }
+.workspace-choice-step em { padding-right: 5px; color: #27354d; font-size: 10px; font-style: normal; font-weight: 650; line-height: 1.35; }
+.workspace-choice-best { display: flex; align-items: center; gap: 10px; margin-top: auto; padding: 13px 14px; border: 1px solid #e0e6ef; border-radius: 12px; background: rgba(255,255,255,.7); color: var(--workspace-accent); }
+.workspace-choice-best > span { color: #52627b; font-size: 10.5px; line-height: 1.35; }
+.workspace-choice-best small { display: block; margin-bottom: 2px; color: #8b98ab; font-family: var(--font-mono); font-size: 8px; letter-spacing: .12em; text-transform: uppercase; }
+
+.auth-content .apply-field { color: #26344c; }
+.auth-content .apply-input-wrap { border-color: #ccd6e5; background: #fff; box-shadow: 0 7px 20px -18px rgba(23, 42, 78, .5); }
+.auth-content .apply-input-wrap:focus-within { border-color: #245ff5; box-shadow: 0 0 0 3px rgba(36,95,245,.1); }
+.auth-content .apply-input-wrap input,
+.auth-content .apply-input-wrap select,
+.auth-content .apply-input-wrap textarea { color: #14213a; }
+.auth-content .apply-input-wrap input::placeholder,
+.auth-content .apply-input-wrap textarea::placeholder { color: #96a2b4; }
+.auth-content .apply-hintline { color: #7a879a; }
+.apply-navigation { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 18px; border-top: 1px solid #dce3ee; }
+.apply-button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px; padding: 0 20px; border-radius: 12px; font-size: 14px; font-weight: 750; transition: 180ms ease; }
+.apply-button-secondary { border: 1px solid #ccd6e5; background: #fff; color: #33415a; }
+.apply-button-secondary:hover { border-color: #9bacC4; background: #f6f8fb; }
+.apply-button-primary { padding-inline: 26px; background: #245ff5; color: #fff; box-shadow: 0 12px 24px -12px rgba(36, 95, 245, .65); }
+.apply-button-primary:hover { background: #174cd1; transform: translateY(-1px); }
+.apply-button:disabled { cursor: not-allowed; opacity: .4; transform: none; }
+
+@media (max-width: 720px) {
+  .workspace-choice-grid { grid-template-columns: 1fr; }
+  .workspace-choice-card { min-height: 365px; }
+  .apply-navigation { flex-direction: column-reverse; }
+  .apply-button { width: 100%; }
 }

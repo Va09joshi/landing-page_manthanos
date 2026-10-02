@@ -5,7 +5,7 @@ import { FooterArt } from "./footer-art";
 import { FooterSubscribe } from "./footer-subscribe";
 
 const columns = [
-  { title: "Product", links: [["Features", "/features"], ["Use cases", "/use-cases"], ["Pricing", "/pricing"]] },
+  { title: "Product", links: [["Features", "/features"], ["Compare", "/compare"], ["Use cases", "/use-cases"], ["Pricing", "/pricing"]] },
   { title: "Resources", links: [["Journal", "/blog"], ["About", "/about"]] },
   { title: "Account", links: [["Get a workspace", "/register"]] },
 ];

@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Loader2,
   Palette,
+  Users,
 } from "lucide-react";
 import { useState } from "react";
 import { api } from "../lib/api";
@@ -39,6 +40,8 @@ const workspaceTypes = {
     description: "For YouTubers, studios, editors and managers.",
     detail: "Ideas → scripts → edits → approvals → publishing, plus brand deals and channel numbers.",
     features: ["Content pipeline", "Publishing calendar", "Brand deals", "Channel analytics"],
+    journey: ["Capture ideas", "Create content", "Approve work", "Publish & learn"],
+    bestFor: "Creators, studios, editors, and content managers",
     Icon: Palette,
     iconClass: "border-[#8175d5]/55 bg-[linear-gradient(145deg,#8274e8_0%,#5040ae_68%,#292261_100%)] shadow-[inset_2px_2px_0_rgba(255,255,255,.2),inset_-3px_-4px_0_rgba(13,10,38,.62),0_3px_0_#17132f,0_10px_18px_-8px_rgba(3,5,15,.98)]",
   },
@@ -48,6 +51,8 @@ const workspaceTypes = {
     description: "For agencies, startups and growing teams.",
     detail: "Leads → client work → approvals → delivery, with departments and clear permissions.",
     features: ["Simple CRM", "Client projects", "Approvals", "Team roles"],
+    journey: ["Qualify leads", "Plan projects", "Assign phases", "Review & deliver"],
+    bestFor: "Agencies, consultancies, startups, and growing teams",
     Icon: Building2,
     iconClass: "border-[#3d7bff]/50 bg-[linear-gradient(145deg,#3478ff_0%,#1748bb_68%,#10337f_100%)] shadow-[inset_2px_2px_0_rgba(255,255,255,.18),inset_-3px_-4px_0_rgba(4,18,63,.35),0_8px_16px_-7px_rgba(36,95,245,.95)]",
   },
@@ -165,17 +170,17 @@ export function WorkspaceApplicationForm() {
   return (
     <form onSubmit={submit} noValidate className="flex flex-col flex-1 h-full">
       {/* ── Header ── */}
-      <div className="pb-6 border-b border-[#1a263c]">
-        <p className="text-[13px] font-bold uppercase tracking-[.16em] text-royal-500">
+      <div className="apply-step-header">
+        <p className="apply-step-count">
           Step {step + 1} of {steps.length}
         </p>
-        <h2 className="mt-1 text-[26px] font-bold leading-tight text-white">{steps[step].title}</h2>
-        <p className="mt-1 text-[15px] text-[#9fb0cc]">{steps[step].hint}</p>
+        <h2>{steps[step].title}</h2>
+        <p>{steps[step].hint}</p>
       </div>
 
       {/* ── Error ── */}
       {state.error ? (
-        <div className="mt-4 rounded-xl border border-red-900/50 bg-red-950/30 px-4 py-3 text-[14px] font-semibold text-red-400" role="alert">
+        <div className="apply-error" role="alert">
           {state.error}
         </div>
       ) : null}
@@ -184,49 +189,42 @@ export function WorkspaceApplicationForm() {
       <div className="flex-1 py-6">
         {/* Step 0: Workspace type */}
         {step === 0 ? (
-          <section className="w-full" aria-label="Workspace type">
-            
-            {/* Smooth Pill Tab Selector exactly like screenshot */}
-            <div className="flex items-center w-full sm:w-fit rounded-full border border-[#1e2e48] bg-[#0b1422] p-1.5 shadow-[0_14px_30px_-18px_rgba(0,0,0,.95)] mb-8">
-              {Object.entries(workspaceTypes).map(([value, option]) => {
-                const active = value === type;
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => setType(value)}
-                    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 rounded-full px-8 py-3 text-[15px] font-bold transition-all duration-200 ${
-                      active
-                        ? "bg-[#245ff5] text-white shadow-[0_10px_22px_-8px_rgba(0,0,0,.9),0_4px_16px_rgba(36,95,245,0.48)]"
-                        : "text-[#6fa1ff] hover:bg-[#131d30] hover:text-[#dce8fb]"
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Detail panel (Compact) */}
-            <div className="rounded-2xl border border-[#1a263c] bg-[#0b1422] p-7">
-              <div className="flex items-center gap-3">
-                <span className={`relative flex h-11 w-11 items-center justify-center rounded-[13px] border text-[#e8f0ff] before:absolute before:inset-[3px] before:rounded-[10px] before:border before:border-white/15 before:content-[''] ${activeType.iconClass}`}>
-                  <span className="relative z-[1] drop-shadow-[0_2px_1px_rgba(4,18,63,.6)]">
-                    <ActiveIcon size={20} strokeWidth={2.2} />
+          <section className="workspace-choice-grid" aria-label="Workspace type">
+            {Object.entries(workspaceTypes).map(([value, option]) => {
+              const active = value === type;
+              const OptionIcon = option.Icon;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setType(value)}
+                  className="workspace-choice-card"
+                  data-active={active}
+                  data-tone={value.toLowerCase()}
+                >
+                  <span className="workspace-choice-topline">
+                    <span className="workspace-choice-icon" aria-hidden="true"><OptionIcon size={24} strokeWidth={2} /></span>
+                    <span className="workspace-choice-check"><Check size={13} strokeWidth={3} /></span>
                   </span>
-                </span>
-                <p className="text-[13px] font-black uppercase tracking-[.14em] text-royal-400">{activeType.label}</p>
-              </div>
-              <p className="mt-4 text-[15px] leading-relaxed text-[#9fb0cc]">{activeType.description} {activeType.detail}</p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {activeType.features.map((feature) => (
-                  <span key={feature} className="rounded-lg border border-[#294b86] bg-[#101f3b] px-3 py-1.5 text-[12px] font-bold text-[#b8d0ff] shadow-sm">
-                    {feature}
+                  <span className="workspace-choice-kicker">{value === "CREATOR" ? "For creative teams" : "For client teams"}</span>
+                  <strong>{option.label} workspace</strong>
+                  <span className="workspace-choice-copy">{option.description}</span>
+                  <span className="workspace-choice-journey">
+                    {option.journey.map((item, index) => (
+                      <span className="workspace-choice-step" key={item}>
+                        <i>{String(index + 1).padStart(2, "0")}</i>
+                        <em>{item}</em>
+                      </span>
+                    ))}
                   </span>
-                ))}
-              </div>
-            </div>
+                  <span className="workspace-choice-best">
+                    <Users size={17} aria-hidden="true" />
+                    <span><small>Best for</small>{option.bestFor}</span>
+                  </span>
+                </button>
+              );
+            })}
           </section>
         ) : null}
 
@@ -332,19 +330,19 @@ export function WorkspaceApplicationForm() {
       </div>
 
       {/* ── Footer nav ── */}
-      <div className="flex flex-col-reverse gap-3 pt-5 border-t border-[#1a263c] sm:flex-row sm:items-center sm:justify-between mt-auto">
+      <div className="apply-navigation">
         <button
           type="button"
           onClick={back}
           disabled={step === 0 || state.loading}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-[#22314c] bg-[#131d30] px-5 text-[14px] font-bold text-[#eef3fb] transition hover:bg-[#1a263c] disabled:cursor-not-allowed disabled:opacity-40"
+          className="apply-button apply-button-secondary"
         >
           <ArrowLeft size={16} /> Back
         </button>
         {step < steps.length - 1 ? (
           <button
             type="submit"
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#245ff5] px-7 text-[14px] font-bold text-white transition hover:bg-[#1b4de4] shadow-[0_10px_22px_-8px_rgba(0,0,0,.9),0_4px_12px_rgba(36,95,245,.3)]"
+            className="apply-button apply-button-primary"
           >
             Continue <ArrowRight size={16} />
           </button>
@@ -352,7 +350,7 @@ export function WorkspaceApplicationForm() {
           <button
             type="submit"
             disabled={state.loading}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#245ff5] px-7 text-[14px] font-bold text-white transition hover:bg-[#1b4de4] shadow-[0_10px_22px_-8px_rgba(0,0,0,.9),0_4px_12px_rgba(36,95,245,.3)] disabled:opacity-70 disabled:cursor-not-allowed"
+            className="apply-button apply-button-primary"
           >
             {state.loading ? <Loader2 className="animate-spin" size={18} /> : <Check size={18} />}
             {state.loading ? "Sending application..." : "Send application"}

@@ -97,6 +97,7 @@ manthanos-public/
 | --- | --- |
 | `/` | Product overview |
 | `/features` | Platform capabilities |
+| `/compare` | Creator and company workspace comparison |
 | `/use-cases` | Workflows for different teams |
 | `/pricing` | Plans and pricing information |
 | `/blog` | Public articles and updates |

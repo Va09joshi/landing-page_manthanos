@@ -8,6 +8,7 @@ import { Logomark } from "./ui";
 
 export const navLinks = [
   ["Product", "/features"],
+  ["Compare", "/compare"],
   ["Pricing", "/pricing"],
   ["Blog", "/blog"],
 ];

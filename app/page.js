@@ -7,6 +7,7 @@ import { ContentCreative } from "../components/content-creative";
 import { MeetingsNotes } from "../components/meetings-notes";
 import { AISummary } from "../components/ai-summary";
 import { Monitoring } from "../components/monitoring";
+import { HomeWorkspaceComparison } from "../components/workspace-comparison";
 import { TrustSection, FAQ } from "../components/trust-faq";
 import { StructuredData } from "../components/structured-data";
 import { product } from "../lib/product";
@@ -97,6 +98,7 @@ export default function Home() {
       <main className="home-page">
         <Hero />
         <PipelineRail />
+        <HomeWorkspaceComparison />
         <ClientsCRM />
         <ContentCreative />
         <MeetingsNotes />
