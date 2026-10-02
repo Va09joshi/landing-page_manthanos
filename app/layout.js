@@ -29,6 +29,11 @@ export const metadata = {
     template: `%s · ${siteName}`,
   },
   description: product.description,
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 
   /* Canonicals are declared on every page. Without them, /features, /features/
      and the same URL with campaign parameters are three pages competing for
