@@ -1,69 +1,94 @@
-import Image from "next/image";
+import { Header } from "../components/site-header";
+import { Footer } from "../components/site-footer";
+import { Hero } from "../components/hero";
+import { PipelineRail } from "../components/pipeline-rail";
+import { ClientsCRM } from "../components/clients-crm";
+import { ContentCreative } from "../components/content-creative";
+import { MeetingsNotes } from "../components/meetings-notes";
+import { AISummary } from "../components/ai-summary";
+import { Monitoring } from "../components/monitoring";
+import { IdeasExecution } from "../components/ideas-execution";
+import { TrustSection, FAQ } from "../components/trust-faq";
+import { ClosingCTA } from "../components/closing-cta";
+
+/*
+  Eleven sections, and that is deliberately fewer than it was.
+
+  REMOVED
+  - ProjectsTasks      a six-row task table. Every row it showed (assignee,
+                       progress bar, due date, status) was already on screen in
+                       PipelineRail and again in Monitoring. Third statement of
+                       the same fact.
+  - TeamCollaboration three abstract figure shapes beside a fourth record
+                      list. The weakest thing on the page visually, and the one
+                      section that proved least — collaboration is better shown
+                      inside the shared record the other sections already
+                      describe. Component is kept on disk; re-add the import and
+                      the tag if you disagree.
+  - AssetSlots        literal scaffolding. It said so on the page: "Handover ·
+                      not part of the live site". Five empty asset frames have
+                      no business in a build anyone sees. Delete it from
+                      /components once the art is sourced.
+
+  WHAT THIS BUYS
+  The page went from 14 sections / 7 product panels / 16 lists to 11 / 4 / 10.
+  Removing the repeats is what makes the sections that remain feel deliberate
+  instead of accumulated — the same task row in three places reads as a product
+  with one feature, not one with many.
+
+  ORDER — each answers a different question, and no two neighbours share a
+  layout pattern or a background.
+
+     1. What it is + who for   (Hero)            ink-950  text on gradient
+     2. How work moves         (PipelineRail)    ink-850  centred + track
+     3. The client relationship(ClientsCRM)      ink-900  asymmetric editorial
+     4. Creative work          (ContentCreative) ink-800  large UI spread
+     5. The human part         (MeetingsNotes)   ink-850  scene L + UI R
+     6. The AI capability      (AISummary)       ink-950  horizontal progression
+     7. What is moving         (Monitoring)      ink-900  one calm dashboard
+     8. The simple idea        (IdeasExecution)  ink-950  whitespace + 3 objects
+     9. Why believe it         (TrustSection)    PAPER    ink on paper
+    10. What to ask            (FAQ)             ink-900  asymmetric accordion
+    11. What to do             (ClosingCTA)      ink-950  minimal conclusion
+
+  BAND SEAM — verified by resolving every class to its token and comparing
+  adjacent pairs, not by reading class names. band-flat, band-dark and
+  band-base are all ink-950; three different names, one colour. Two sections
+  that read as "different" in this file were merging on screen. The one
+  remaining ink-950 pair is CTA -> footer, which is deliberate: the footer
+  card is inset into that field rather than sitting beside it.
+
+  COLOUR DISCIPLINE
+  Only the hero and the closing CTA use a generous blue glow. Coral appears
+  only where people talk, purple only at the AI step, orange only where
+  something is being imagined. If a section needs a fourth accent to make
+  sense, the section is the problem.
+*/
+
+export const metadata = {
+  title: "ManthanOS — One workspace for the work behind the work",
+  description:
+    "ManthanOS connects your ideas, projects, tasks, clients, meetings and content in one workspace — with ownership, approvals and handoffs already built in.",
+};
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.js
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <Header />
+      <main>
+        <Hero />
+        <PipelineRail />
+        <ClientsCRM />
+        <ContentCreative />
+        <MeetingsNotes />
+        <AISummary />
+        <Monitoring />
+        <IdeasExecution />
+        <TrustSection />
+        <FAQ />
+        <ClosingCTA />
       </main>
-    </div>
+      <Footer />
+    </>
   );
 }

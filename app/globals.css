@@ -1,26 +1,696 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ============================================================================
+   ManthanOS design system — "Dark Blue"
+   Deep navy surfaces, one royal blue accent, premium dark throughout.
+   No light/paper sections. The entire site is dark.
+   ========================================================================== */
+
+@theme {
+  /* Ink — dark surfaces, from deepest to slightly raised.
+
+     These are NAVY, not neutral black. A pure neutral dark (#05070B) reads as
+     a dead panel; carrying a consistent blue hue up the scale makes the whole
+     page feel lit from within rather than merely dark. The hue is held roughly
+     constant (H ≈ 218-224) so the steps read as one family.
+
+     Keep the luminance spacing even. These six values ARE the page's depth —
+     every band, card and border on the site derives from them, so changing one
+     shifts everything above it. */
+  --color-ink-950: #060910; /* deepest — page + entry beats */
+  --color-ink-900: #0A101C; /* one step up */
+  --color-ink-850: #0E1626; /* the working surface, product UI sits here */
+  --color-ink-800: #131D30; /* lightest dark band */
+  --color-ink-700: #1A263C; /* raised cards, inputs */
+  --color-ink-600: #22314C; /* borders on dark, hover fills */
+
+  /* Blue — the single accent, used deliberately */
+  --color-royal-700: #143BB4;
+  --color-royal-600: #1B4DE4;
+  --color-royal-500: #245FF5;
+  --color-royal-400: #4B82F2;
+  --color-signal:    #6FA1FF;
+  --color-soft:      #9CC0FF;
+  --color-mist:      #DCE8FB;
+
+  /* Text */
+  --color-chalk:     #EEF3FB;
+  --color-chalk-dim: #9FB0CC;
+  --color-chalk-faint: #6278A0;
+
+  /* Functional — used ONLY when they communicate meaning */
+  --color-status-green:  #34D399;
+  --color-status-orange: #F97316;
+  --color-status-yellow: #FBBF24;
+  --color-status-coral:  #FB7185;
+  --color-status-purple: #A78BFA;
+
+  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    var(--font-plex-mono), ui-monospace, monospace;
+
+  --radius-card: 12px;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --line-dark:        rgba(255, 255, 255, 0.07);
+  --line-dark-mid:    rgba(255, 255, 255, 0.10);
+  --line-dark-strong: rgba(255, 255, 255, 0.15);
+
+  --shell:   1280px;
+  --gutter:  24px;
+
+  --shadow-plate: 0 1px 2px rgba(2, 8, 20, 0.15), 0 12px 32px -12px rgba(2, 8, 20, 0.45);
+  --shadow-lift:  0 2px 4px rgba(2, 8, 20, 0.12), 0 28px 60px -24px rgba(2, 8, 20, 0.70);
+  --shadow-blue:  0 0 0 1px rgba(36, 95, 245, 0.25), 0 14px 36px -14px rgba(36, 95, 245, 0.55);
+
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    background: var(--color-ink-950);
+  }
+
+  body {
+    min-width: 320px;
+    overflow-x: hidden;
+    background: var(--color-ink-950);
+    color: var(--color-chalk);
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  button, a { -webkit-tap-highlight-color: transparent; }
+
+  ::selection { background: var(--color-royal-500); color: #fff; }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+
+  /* Split application shell: the visual identity stays quiet while the form
+     remains the clear next step. */
+  .auth-stage {
+    position: relative;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    padding: 32px;
+    background: #070a12;
+  }
+  .auth-ambient { position: absolute; inset: 0; background: radial-gradient(circle at 15% 8%, rgba(45,96,245,.2), transparent 35%), radial-gradient(circle at 90% 95%, rgba(38,76,190,.14), transparent 35%); }
+  .auth-window { position: relative; display: grid; width: min(1140px, 100%); min-height: min(760px, calc(100dvh - 64px)); overflow: hidden; border: 1px solid rgba(255,255,255,.1); border-radius: 24px; background: #fdfdff; box-shadow: 0 35px 90px -30px rgba(0,0,0,.72); grid-template-columns: minmax(0, 1.03fr) minmax(0, .97fr); }
+  .auth-story { position: relative; display: flex; flex-direction: column; overflow: hidden; padding: 38px 48px 30px; color: white; background: linear-gradient(145deg, #0f45cf 0%, #0b39bc 48%, #092a96 100%); }
+  .auth-story::before { content: ""; position: absolute; inset: 0; opacity: .25; background-image: radial-gradient(rgba(255,255,255,.6) 1px, transparent 1px); background-size: 24px 24px; mask-image: linear-gradient(to bottom right, rgba(0,0,0,.45), transparent 58%); }
+  .auth-story::after { content: ""; position: absolute; width: 540px; height: 540px; right: -240px; top: 45%; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; box-shadow: 0 0 0 42px rgba(255,255,255,.035), 0 0 0 84px rgba(255,255,255,.025); }
+  .auth-brand, .auth-story-copy, .auth-workspace-art, .auth-story-note { position: relative; z-index: 1; }
+  .auth-trust { display: inline-flex; align-items: center; gap: 8px; width: fit-content; margin-top: 88px; padding: 8px 13px; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; background: rgba(255,255,255,.1); color: rgba(255,255,255,.85); font-size: 12px; }
+  .auth-story-copy h2 { margin-top: 22px; font-size: clamp(32px, 4vw, 49px); line-height: 1.04; letter-spacing: -.06em; }
+  .auth-story-copy h2 span { color: #a9c9ff; }
+  .auth-story-copy > p:last-child { margin-top: 18px; color: rgba(255,255,255,.72); font-size: 15px; line-height: 1.6; }
+  .auth-workspace-art { min-height: 250px; margin-top: auto; padding-top: 28px; }
+  .auth-art-orbit { position: absolute; right: 12%; bottom: -14px; width: 170px; height: 170px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; box-shadow: 0 0 0 20px rgba(255,255,255,.035), inset 0 0 35px rgba(255,255,255,.1); }
+  .auth-preview { position: absolute; left: 4%; bottom: 4px; width: min(390px, 91%); padding: 20px 20px 16px; border: 1px solid rgba(255,255,255,.22); border-radius: 15px; background: rgba(13,31,94,.72); box-shadow: 0 24px 42px rgba(0,18,90,.35); transform: rotate(-3deg); backdrop-filter: blur(8px); }
+  .auth-preview-header, .auth-preview-task, .auth-preview-tabs { display: flex; align-items: center; }
+  .auth-preview-header { justify-content: space-between; color: rgba(255,255,255,.82); font-size: 11px; }
+  .auth-preview-header > span:first-child { display: inline-flex; align-items: center; gap: 7px; }
+  .auth-preview-avatar { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #78a7ff; color: #102d87; font-size: 10px; font-weight: 800; }
+  .auth-preview-eyebrow { margin-top: 23px; color: #80abff; font-family: var(--font-mono); font-size: 8px; letter-spacing: .12em; }
+  .auth-preview-title { margin-top: 7px; color: #fff; font-size: 22px; font-weight: 600; letter-spacing: -.05em; }
+  .auth-preview-tabs { gap: 18px; margin-top: 16px; padding-bottom: 11px; border-bottom: 1px solid rgba(255,255,255,.13); color: rgba(255,255,255,.5); font-size: 10px; }
+  .auth-preview-tabs span:first-child { color: #fff; }
+  .auth-preview-task { gap: 10px; padding: 11px 0; color: rgba(255,255,255,.9); font-size: 11px; }
+  .auth-preview-task > span:nth-child(2) { flex: 1; }
+  .auth-preview-task small { display: block; margin-top: 3px; color: rgba(255,255,255,.42); font-size: 9px; }
+  .auth-task-check, .auth-task-dot { display: inline-flex; width: 16px; height: 16px; align-items: center; justify-content: center; border-radius: 50%; }
+  .auth-task-check { background: #47d49c; color: #0a3f52; }
+  .auth-task-dot { border: 1px solid #78a7ff; }
+  .auth-task-tag { padding: 4px 7px; border-radius: 999px; background: rgba(71,212,156,.14); color: #65e2ad; font-size: 9px; }
+  .auth-preview-progress { display: flex; gap: 4px; margin-top: 6px; }
+  .auth-preview-progress span { height: 3px; flex: 1; border-radius: 99px; background: rgba(255,255,255,.18); }
+  .auth-preview-progress span:first-child, .auth-preview-progress span:nth-child(2) { background: #65a0ff; }
+  .auth-art-badge { position: absolute; right: 0; bottom: 12px; display: flex; align-items: center; gap: 8px; padding: 9px 12px 9px 9px; border: 1px solid rgba(255,255,255,.18); border-radius: 10px; background: rgba(255,255,255,.12); font-size: 10px; color: rgba(255,255,255,.82); backdrop-filter: blur(8px); }
+  .auth-art-badge span { display: inline-flex; align-items: center; justify-content: center; width: 23px; height: 23px; border-radius: 7px; background: #4ad6a0; color: #073b4d; }
+  .auth-story-note { margin-top: 26px; color: rgba(255,255,255,.4); font-family: var(--font-mono); font-size: 10px; }
+  .auth-content { position: relative; display: flex; align-items: center; background: #fff; color: var(--color-ink-900); }
+  .auth-content-inner { width: min(100%, 450px); margin: auto; padding: 56px 54px; }
+  .auth-close { position: absolute; top: 24px; right: 24px; display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid #e1e5ec; border-radius: 50%; color: #657184; transition: .2s; }
+  .auth-close:hover { border-color: #245ff5; color: #245ff5; background: #f4f7ff; }
+  .auth-content h1 { font-size: clamp(26px, 3vw, 33px); color: #151a24; }
+  .auth-subtitle { margin-top: 11px; color: #788294; font-size: 14px; line-height: 1.65; }
+  .auth-form-slot { margin-top: 28px; }
+  .auth-form-slot form { border: 0; background: transparent; padding: 0; }
+  .auth-form-slot form > div { border-color: #e1e5ec; }
+  .auth-bottom { margin-top: 25px; padding-top: 19px; border-top: 1px solid #e7eaf0; }
+  @media (max-width: 900px) { .auth-stage { padding: 0; } .auth-window { min-height: 100dvh; border: 0; border-radius: 0; grid-template-columns: 1fr; } .auth-story { display: none; } .auth-content-inner { padding: 76px 24px 42px; } }
+  @media (min-width: 901px) and (max-height: 800px) { .auth-story-copy { margin-top: -50px; } .auth-trust { margin-top: 52px; } .auth-workspace-art { min-height: 190px; } }
+
+  /* ---- layout: one width, one gutter, everywhere ------------------------ */
+  .shell {
+    width: 100%;
+    max-width: var(--shell);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  @media (min-width: 1024px) {
+    .shell { padding-inline: 48px; }
+  }
+
+  /* ---- band variants -------------------------------------------------
+     The site is dark-first, but it is NOT a monochrome site. A small number
+     of light bands exist to give the eye somewhere to rest and to stop a very
+     long page from reading as one undifferentiated dark field.
+
+     Rule of thumb: no more than three light bands in the whole document, never
+     two adjacent, and never for a section that is mostly product UI (a light
+     band behind a dark product surface looks like a mistake, not a contrast).
+
+     THE LADDER IS FOUR STEPS, NOT SIX NAMES.
+     ink-950 / 900 / 850 / 800. Everything else is an alias:
+
+        950  deepest — entry, and any beat that should feel like a pause
+        900  one step up
+        850  one step up — the working surface, where product UI sits
+        800  lightest dark — use sparingly, it reads almost grey
+
+     band-flat, band-dark and band-base are all ink-950. They are NOT three
+     shades and naming one of them "flat" does not make a section calmer. Two
+     adjacent sections are only separated if they resolve to different VALUES,
+     so check the token, not the class name. The homepage order is audited
+     against this ladder in the comment at the top of app/page.js. */
+  .band-base    { background: var(--color-ink-950); color: var(--color-chalk); }
+  .band-flat    { background: var(--color-ink-950); color: var(--color-chalk); }
+  .band-dark    { background: var(--color-ink-950); color: var(--color-chalk); }
+  .band-raise   { background: var(--color-ink-900); color: var(--color-chalk); }
+  .band-surface { background: var(--color-ink-850); color: var(--color-chalk); }
+  .band-deep    { background: var(--color-ink-800); color: var(--color-chalk); }
+
+  /* Legacy name kept: several secondary pages still ask for a "paper" band.
+     Those pages are dark, so this resolves to the darkest surface rather than
+     leaving the section unstyled and transparent. */
+  .band-paper   { background: var(--color-ink-950); color: var(--color-chalk); }
+
+  /* ---- the light bands ------------------------------------------------
+     A warm off-white, not pure #fff — pure white next to a near-black page
+     vibrates, and a paper tone settles it. */
+  .band-light      { background: #F7F8FB; color: var(--color-ink-900); }
+  .band-light-deep { background: #EDF0F6; color: var(--color-ink-900); }
+
+  /* Text that inverts on a light band. Scoped as utilities so a component
+     never has to remember which background it is sitting on. */
+  .on-light        { color: var(--color-ink-900); }
+  .on-light-dim    { color: #4A5568; }
+  .on-light-faint  { color: #6B7688; }
+  .on-light-head   { color: var(--color-ink-950); }
+
+  .band-pad    { padding-block: clamp(80px, 10vw, 148px); }
+  .band-pad-sm { padding-block: clamp(56px, 6.5vw, 96px); }
+  .band-pad-lg { padding-block: clamp(96px, 12vw, 180px); }
+
+  /* ---- type ------------------------------------------------------------ */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-signal);
+  }
+
+  .lede {
+    font-size: clamp(16px, 1.35vw, 18.5px);
+    line-height: 1.65;
+    color: var(--color-chalk-dim);
+    max-width: 60ch;
+  }
+
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ---- surfaces -------------------------------------------------------- */
+
+  /* Standard dark elevated surface */
+  .plate {
+    background: var(--color-ink-850);
+    border: 1px solid var(--line-dark-mid);
+    border-radius: var(--radius-card);
+  }
+
+  /* Deeper raised surface */
+  .plate-deep {
+    background: var(--color-ink-800);
+    border: 1px solid var(--line-dark);
+    border-radius: var(--radius-card);
+  }
+
+  /* Blue-tinted feature surface */
+  .plate-blue {
+    background: linear-gradient(145deg, rgba(36, 95, 245, 0.08) 0%, rgba(20, 59, 180, 0.04) 100%);
+    border: 1px solid rgba(36, 95, 245, 0.2);
+    border-radius: var(--radius-card);
+  }
+
+  .hairline { border-top: 1px solid var(--line-dark); }
+
+  /* ---- ambient textures ------------------------------------------------
+     Deliberately low contrast. These sit BEHIND content and must never be
+     readable as a pattern. If you can see the grid clearly, it is too strong. */
+
+  /* Faint blueprint grid — a single hairline every 64px, faded top and bottom
+     so sections do not end on a hard ruled edge.
+
+     The lines are tinted SIGNAL blue, not white. A pure white hairline on a
+     navy field reads as grey dust; a blue one dissolves into the surface and
+     gives the impression the grid is lit rather than printed. Alpha is low
+     enough that it stays texture, not pattern — if you can read it clearly,
+     it is too strong. */
+  .mesh-dark {
+    background-image:
+      linear-gradient(to right, rgba(111, 161, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(111, 161, 255, 0.045) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: center top;
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 20%, transparent 78%);
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 20%, transparent 78%);
+  }
+
+  /* Same lattice, but anchored low — used to close a section instead of open it. */
+  .mesh-light {
+    background-image:
+      linear-gradient(to right, rgba(111, 161, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(111, 161, 255, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 100%, #000 20%, transparent 76%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 100%, #000 20%, transparent 76%);
+  }
+
+  /* ---- ambient light, not another grid ---------------------------------
+     Three very wide, very soft blue pools. This is what stops the dark bands
+     reading as flat fills: the surface appears lit from above-left and behind
+     the content rather than evenly painted.
+
+     Deliberately NOT a gradient on the band class. A single flat fill plus a
+     bloom on top lets each section choose its own light direction while still
+     sharing one value, which is what keeps the ladder readable. Pair it with a
+     band and nothing else:
+
+         <section className="band-dark relative overflow-hidden">
+           <div aria-hidden className="pointer-events-none absolute inset-0 ambient" />
+
+     Keep total opacity low. If you can point at the light source, it is too
+     strong; it should register as depth, not as a coloured shape. */
+  .ambient {
+    background-image:
+      radial-gradient(ellipse 80% 55% at 12% -5%, rgba(36, 95, 245, 0.16), transparent 62%),
+      radial-gradient(ellipse 70% 60% at 92% 8%, rgba(27, 77, 228, 0.10), transparent 60%),
+      radial-gradient(ellipse 90% 70% at 50% 108%, rgba(6, 10, 20, 0.85), transparent 70%);
+  }
+
+  /* Ambient for sections that already sit high on the ladder. Weaker, because
+     these are the sections closest to white and a bloom on them reads as a
+     stain rather than as depth. */
+  .ambient-soft {
+    background-image:
+      radial-gradient(ellipse 75% 50% at 15% 0%, rgba(36, 95, 245, 0.09), transparent 62%),
+      radial-gradient(ellipse 90% 70% at 50% 110%, rgba(6, 10, 20, 0.5), transparent 70%);
+  }
+
+  /* Ambient for the deepest bands, where a stronger pool still stays subtle
+     because there is so much headroom above ink-950. */
+  .ambient-deep {
+    background-image:
+      radial-gradient(ellipse 70% 50% at 50% -10%, rgba(36, 95, 245, 0.20), transparent 64%),
+      radial-gradient(ellipse 60% 45% at 8% 96%, rgba(27, 77, 228, 0.12), transparent 62%);
+  }
+
+  /* The dark-surface lattice has to invert on a light band, or it disappears
+     entirely. Same geometry, ink instead of white, same low contrast. */
+  .mesh-ink {
+    background-image:
+      linear-gradient(to right, rgba(10, 16, 28, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(10, 16, 28, 0.045) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: center top;
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 20%, transparent 78%);
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 20%, transparent 78%);
+  }
+
+  /* Fine dot lattice at very low contrast. */
+  .dots-dark {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+
+  /* Subtle noise grain — layered over sections for depth */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    z-index: 0;
+  }
+
+  /* Veils — soften band transitions only */
+  /* The alpha stop is rgba(6,9,16,0) — ink-950 with zero alpha. Written as a
+     token so the fade can never drift away from the surface it is fading. */
+.veil-top    { background: linear-gradient(to bottom, var(--color-ink-950), rgba(6, 9, 16, 0)); }
+  .veil-bottom { background: linear-gradient(to top,    var(--color-ink-950), rgba(6, 9, 16, 0)); }
+
+  /* ---- 3D stage -------------------------------------------------------- */
+  .stage      { perspective: 1400px; perspective-origin: 50% 40%; }
+  .stage-deep { perspective: 1000px; perspective-origin: 50% 45%; }
+  .tilt-x     { transform-style: preserve-3d; will-change: transform; }
+
+  /* ---- interaction ----------------------------------------------------- */
+  .lift {
+    transition:
+      transform 400ms var(--ease-out),
+      box-shadow 400ms var(--ease-out),
+      border-color 240ms var(--ease-out);
+  }
+  .lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(75, 130, 242, 0.35);
+  }
+
+  /* Blue-glow lift — for primary cards */
+  .lift-blue {
+    transition:
+      transform 400ms var(--ease-out),
+      box-shadow 400ms var(--ease-out),
+      border-color 240ms var(--ease-out);
+  }
+  .lift-blue:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-blue);
+    border-color: rgba(36, 95, 245, 0.4);
+  }
+
+  /* Underline sweep from left */
+  .link-sweep { position: relative; display: inline-block; }
+  .link-sweep::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 320ms var(--ease-out);
+  }
+  .link-sweep:hover::after { transform: scaleX(1); transform-origin: left; }
+
+  /* Marquee / logo drift */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: drift 48s linear infinite;
+  }
+  @keyframes drift {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .marquee-mask {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .scroll-rail { scrollbar-width: none; -ms-overflow-style: none; }
+  .scroll-rail::-webkit-scrollbar { display: none; }
+
+  /* ---- form fields ----------------------------------------------------- */
+  .field {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--line-dark-strong);
+    background: var(--color-ink-850);
+    padding: 12px 14px;
+    font-size: 15px;
+    color: var(--color-chalk);
+    transition: border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+  }
+  .field::placeholder { color: var(--color-chalk-faint); }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-royal-400);
+    box-shadow: 0 0 0 4px rgba(36, 95, 245, 0.15);
+  }
+  .field-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-chalk-dim);
+    margin-bottom: 6px;
+  }
+
+  /* ---- status pills ---------------------------------------------------- */
+  .pill-blue   { background: rgba(36, 95, 245, 0.12); border: 1px solid rgba(75, 130, 242, 0.3); color: var(--color-soft); }
+  .pill-green  { background: rgba(52, 211, 153, 0.10); border: 1px solid rgba(52, 211, 153, 0.25); color: #6EE7B7; }
+  .pill-yellow { background: rgba(251, 191, 36, 0.10); border: 1px solid rgba(251, 191, 36, 0.25); color: #FCD34D; }
+  .pill-orange { background: rgba(249, 115, 22, 0.10); border: 1px solid rgba(249, 115, 22, 0.25); color: #FB923C; }
+  .pill-coral  { background: rgba(251, 113, 133, 0.10); border: 1px solid rgba(251, 113, 133, 0.25); color: #FDA4AF; }
+  .pill-purple { background: rgba(167, 139, 250, 0.10); border: 1px solid rgba(167, 139, 250, 0.25); color: #C4B5FD; }
+  .pill-idle   { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line-dark-mid); color: var(--color-chalk-dim); }
+
+  /* ---- product window ------------------------------------------------
+     The shared chrome for every ManthanOS UI mock on the site. One shape,
+     one border, one shadow — so the interface reads as ONE product no
+     matter which section it appears in. */
+  .ui-window {
+    background: var(--color-ink-850);
+    border: 1px solid var(--line-dark-mid);
+    border-radius: 14px;
+    box-shadow:
+      0 1px 2px rgba(2, 8, 20, 0.4),
+      0 32px 70px -28px rgba(2, 8, 20, 0.9);
+    overflow: hidden;
+  }
+
+  /* Inner content well — one step darker than the window frame. */
+  .ui-well {
+    background: var(--color-ink-900);
+    border: 1px solid var(--line-dark);
+    border-radius: 10px;
+  }
+
+  /* A true hairline. Used instead of borders on dense UI rows so a long list
+     reads as one surface rather than a stack of boxes. */
+  .ui-row + .ui-row { border-top: 1px solid var(--line-dark); }
+
+  /* Blue wash used only to mark the active/selected record in a UI mock. */
+  .ui-active { background: rgba(36, 95, 245, 0.07); }
+
+  /* ---- editorial helpers ---------------------------------------------- */
+  .rule-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-chalk-faint);
+  }
+  .rule-label::before {
+    content: "";
+    width: 22px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+  }
+
+  /* Progress track used by tasks, phases and project rows. */
+  .track {
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.09);
+    overflow: hidden;
+  }
+  .track > span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+  }
+
+  /* ---- image placeholder ---------------------------------------------
+     A visible, honest marker for art that has not been supplied yet.
+
+     This is deliberately NOT a broken-image icon. It states what the slot is
+     for, what size it wants, and which formats work — so whoever fills it in
+     does not have to reverse-engineer the layout to find out. Set
+     `data-filled` on the element once real art is dropped in and the styling
+     switches to a normal frame automatically. */
+  .asset-slot {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 200px;
+    padding: 28px;
+    text-align: center;
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.18);
+    background:
+      repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.014) 0 10px,
+        transparent 10px 20px
+      ),
+      rgba(255, 255, 255, 0.015);
+    color: var(--color-chalk-faint);
+  }
+
+  /* Once real art lands, the placeholder chrome retires itself. */
+  .asset-slot[data-filled="true"] {
+    border-style: solid;
+    border-color: var(--line-dark-mid);
+    background: var(--color-ink-900);
+    padding: 0;
+  }
+
+  /* On a light band the dashes have to invert too. */
+  .asset-slot--light {
+    border-color: rgba(8, 11, 18, 0.16);
+    background:
+      repeating-linear-gradient(
+        45deg,
+        rgba(8, 11, 18, 0.02) 0 10px,
+        transparent 10px 20px
+      ),
+      rgba(8, 11, 18, 0.012);
+    color: #6B7688;
+  }
+
+  /* ---- hero glossy headline ---------------------------------------------
+     Clean gradient text with a slow shine sweep. White lines stay bright,
+     blue lines stay royal — both get a moving gloss band on top. */
+  .hero-title {
+    text-wrap: balance;
+  }
+
+  .hero-shine {
+    position: relative;
+    display: inline-block;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-size: 220% 100%, 100% 100%;
+    animation: hero-shine-sweep 6s ease-in-out infinite;
+  }
+
+  .hero-shine--white {
+    background-image:
+      linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.95) 50%, transparent 58%),
+      linear-gradient(180deg, #ffffff 20%, #dbe6f7 55%, #9fb0cc 100%);
+  }
+
+  .hero-shine--blue {
+    background-image:
+      linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.9) 50%, transparent 58%),
+      linear-gradient(180deg, #7aa5ff 0%, #4b82f2 48%, #245ff5 100%);
+  }
+
+  @keyframes hero-shine-sweep {
+    0% { background-position: 130% 0, 0 0; }
+    45% { background-position: -60% 0, 0 0; }
+    100% { background-position: -60% 0, 0 0; }
+  }
+
+  /* ---- scroll text reveal ---------------------------------------------
+     A word-by-word entrance driven by a CSS custom property that the
+     ScrollReveal component writes as the section scrolls into view.
+
+     Why CSS and not Framer for this one: it runs entirely on the compositor
+     with no JS in the loop once triggered, and it degrades to fully visible
+     text when the property is never set — which is what happens under
+     prefers-reduced-motion, and what happens if JS never runs at all.
+     A headline that can be stuck invisible is a worse bug than no animation. */
+  .reveal-text {
+    /* Each word is a span; --i is set inline per word. */
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+
+  .reveal-text > span {
+    display: inline-block;
+    transform: translateY(105%);
+    transition: transform 780ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--i, 0) * 55ms);
+    will-change: transform;
+  }
+
+  /* The parent gets .is-revealed once the section is in view. */
+  .is-revealed .reveal-text > span {
+    transform: translateY(0);
+  }
+
+  /* Without JS, or with motion reduced, the words are simply present.
+     This is the default state on purpose: content first, motion second. */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-text > span {
+      transform: none;
+      transition: none;
+    }
+  }
+}
+
+/* ---- reduced motion ---------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee-track { animation: none; }
+  .hero-shine { animation: none; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
