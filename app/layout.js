@@ -30,9 +30,9 @@ export const metadata = {
   },
   description: product.description,
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
 
   /* Canonicals are declared on every page. Without them, /features, /features/

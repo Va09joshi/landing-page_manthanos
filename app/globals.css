@@ -428,6 +428,32 @@
     padding-inline: var(--gutter);
   }
 
+  .blog-article-body {
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  .blog-article-body a,
+  .blog-article-body code {
+    overflow-wrap: anywhere;
+  }
+
+  .blog-article-title {
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  .blog-article-body p,
+  .blog-article-body li {
+    line-height: 1.85;
+  }
+
+  .blog-article-body p + p,
+  .blog-article-body ul + p,
+  .blog-article-body ol + p {
+    margin-top: 1.35em;
+  }
+
   @media (min-width: 1024px) {
     .shell { padding-inline: 48px; }
   }

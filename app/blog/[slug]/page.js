@@ -130,7 +130,7 @@ export default async function BlogPost({ params }) {
 
           <div className="mt-14 max-w-[46ch]">
             <p className="eyebrow">{post.category?.name ?? "Journal"}</p>
-            <h1 className="mt-5 text-[clamp(30px,4.4vw,52px)] font-semibold leading-[1.05] text-white">
+            <h1 className="blog-article-title mt-5 max-w-[22ch] text-balance text-[clamp(30px,4.4vw,52px)] font-semibold leading-[1.05] text-white">
               {post.title}
             </h1>
             {post.excerpt && (
@@ -140,14 +140,14 @@ export default async function BlogPost({ params }) {
 
           {post.coverImageUrl && (
             <Reveal delay={0.1}>
-              <div className="relative mt-14 aspect-[21/9] w-full overflow-hidden rounded-[14px] border border-white/10 bg-ink-900">
+              <div className="relative mt-14 flex min-h-[220px] w-full items-center justify-center overflow-hidden rounded-[14px] border border-white/10 bg-ink-900 sm:min-h-[320px] lg:min-h-[420px]">
                 <Image
                   src={post.coverImageUrl}
                   alt=""
                   fill
                   sizes="(max-width: 1280px) 100vw, 1280px"
                   priority
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
             </Reveal>
@@ -155,7 +155,7 @@ export default async function BlogPost({ params }) {
 
           <Reveal delay={0.15}>
             <div
-              className="prose prose-invert mt-14 max-w-[70ch] prose-headings:font-semibold prose-headings:tracking-[-.02em] prose-a:text-soft prose-strong:text-white"
+              className="blog-article-body prose prose-invert mt-14 w-full max-w-[70ch] min-w-0 prose-headings:font-semibold prose-headings:tracking-[-.02em] prose-a:text-soft prose-strong:text-white"
               dangerouslySetInnerHTML={{ __html: bodyHtml }}
             />
           </Reveal>
