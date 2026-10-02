@@ -138,9 +138,47 @@ function ReviewRow({ label, value }) {
 }
 
 export function AuthForm({ mode }) {
-  const [form, setForm] = useState({ name: "", email: "", password: "", token: "" }); const [error, setError] = useState(""); const [loading, setLoading] = useState(false);
-  async function submit(event) { event.preventDefault(); setLoading(true); setError(""); try { const data = mode === "login" ? await api.login({ email: form.email, password: form.password }) : mode === "register" ? await api.register(form) : await api.acceptInvite({ token: form.token, password: form.password }); localStorage.setItem("manthanos_token", data.token); const profile = await api.me(data.token); const membership = profile.memberships?.[0]; const role = membership?.role?.name?.toLowerCase() || "employee"; /* Portal URLs come from the deployment env. The old code fell back to localhost:3001/3002, so a production deploy missing these vars signed the user in and then dumped them on their own machine. With no destination configured we stay on the marketing site instead. */ const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL; const employeeUrl = process.env.NEXT_PUBLIC_EMPLOYEE_URL; const destination = role.includes("admin") || membership?.isOwner ? adminUrl : employeeUrl; window.location.href = destination || "/"; } catch (err) { setError(err.message); setLoading(false); } }
-  const isInvite = mode === "invite"; return <form onSubmit={submit} className="space-y-4">{error && <p className="rounded-lg bg-[#fff0f0] p-3 text-sm text-[#b42318]">{error}</p>}{mode === "register" && <Field label="Full name" name="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />}{isInvite && <Field label="Invitation token" name="token" value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} required />}{!isInvite && <Field label="Email" type="email" name="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />}<Field label="Password" type="password" name="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} minLength="8" required /><button disabled={loading} className="w-full h-11 rounded-[10px] bg-[#245ff5] px-5 font-semibold text-white disabled:opacity-60">{loading ? "Working..." : isInvite ? "Accept invitation" : mode === "login" ? "Sign in" : "Create account"}</button>{!isInvite && <p className="text-center text-sm text-[#64748b]">{mode === "login" ? <>Need an account? <Link className="text-[#245ff5]" href="/register">Register</Link></> : <>Already have an account? <Link className="text-[#245ff5]" href="/login">Sign in</Link></>}</p>}</form>;
+  // Sign-in / self-registration are retired on the marketing site.
+  // Workspaces are granted via application (register) or invite. If an old
+  // link still lands here with mode="login", guide the visitor back to the
+  // single apply flow instead of showing a password form.
+  if (mode === "login" || mode === "register") {
+    return (
+      <div className="rounded-2xl border border-[#dce8f5] bg-[#fbfdff] p-6 text-center">
+        <p className="text-sm font-black text-[#11243d]">Workspaces are invite-only</p>
+        <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#52647a]">
+          Tell us how your team works and we will set up the right starting structure.
+        </p>
+        <Link href="/register" className="mt-4 inline-flex h-11 items-center justify-center rounded-[10px] bg-[#245ff5] px-6 text-sm font-bold text-white transition hover:bg-[#1b4de4]">
+          Apply for a workspace
+        </Link>
+      </div>
+    );
+  }
+  const [form, setForm] = useState({ token: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  async function submit(event) {
+    event.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      await api.acceptInvite({ token: form.token, password: form.password });
+      setError("Invite accepted. Check your email for workspace access.");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+  return (
+    <form onSubmit={submit} className="space-y-4">
+      {error && <p className="rounded-lg bg-[#fff0f0] p-3 text-sm text-[#b42318]">{error}</p>}
+      <Field label="Invitation token" name="token" value={form.token} onChange={(e) => setForm({ ...form, token: e.target.value })} required />
+      <Field label="Password" type="password" name="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} minLength="8" required />
+      <button disabled={loading} className="h-11 w-full rounded-[10px] bg-[#245ff5] px-5 font-semibold text-white disabled:opacity-60">{loading ? "Working..." : "Accept invitation"}</button>
+    </form>
+  );
 }
 
 export function WorkspaceApplicationForm() {

@@ -3,14 +3,15 @@ import { ArrowUpRight } from "lucide-react";
 import { Header } from "../../components/site-header";
 import { Footer } from "../../components/site-footer";
 import { PageHead, Reveal, SectionHead } from "../../components/ui";
-import { ClosingCTA } from "../../components/closing-cta";
 import { roleTemplates, workspaceTypes } from "../../lib/product";
+import { pageMetadata } from "../../lib/site";
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: "/use-cases",
   title: "Use cases",
   description:
     "How creator teams, agencies, studios and growing companies each use ManthanOS, and which modules carry the weight for each.",
-};
+});
 
 /*
   Each use case alternates side on purpose. A four-up grid of identical cards
@@ -178,8 +179,6 @@ export default function UseCases() {
             </div>
           </div>
         </section>
-
-        <ClosingCTA />
       </main>
       <Footer />
     </>

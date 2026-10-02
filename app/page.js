@@ -7,14 +7,20 @@ import { ContentCreative } from "../components/content-creative";
 import { MeetingsNotes } from "../components/meetings-notes";
 import { AISummary } from "../components/ai-summary";
 import { Monitoring } from "../components/monitoring";
-import { IdeasExecution } from "../components/ideas-execution";
 import { TrustSection, FAQ } from "../components/trust-faq";
-import { ClosingCTA } from "../components/closing-cta";
+import { StructuredData } from "../components/structured-data";
+import { product } from "../lib/product";
+import { siteName } from "../lib/site";
 
 /*
-  Eleven sections, and that is deliberately fewer than it was.
+  Ten sections, and that is deliberately fewer than it was.
 
   REMOVED
+  - ClosingCTA      the "Bring the work you are actually doing." conclusion.
+                       It repeated the hero's ask on every page it appeared and
+                       pushed the footer below the fold on smaller viewports.
+                       Component is kept on disk at /components/closing-cta.js;
+                       re-add the import and the tag if you disagree.
   - ProjectsTasks      a six-row task table. Every row it showed (assignee,
                        progress bar, due date, status) was already on screen in
                        PipelineRail and again in Monitoring. Third statement of
@@ -48,34 +54,47 @@ import { ClosingCTA } from "../components/closing-cta";
      7. What is moving         (Monitoring)      ink-900  one calm dashboard
      8. The simple idea        (IdeasExecution)  ink-950  whitespace + 3 objects
      9. Why believe it         (TrustSection)    PAPER    ink on paper
-    10. What to ask            (FAQ)             ink-900  asymmetric accordion
-    11. What to do             (ClosingCTA)      ink-950  minimal conclusion
+     10. What to ask            (FAQ)             ink-900  asymmetric accordion
 
   BAND SEAM — verified by resolving every class to its token and comparing
   adjacent pairs, not by reading class names. band-flat, band-dark and
   band-base are all ink-950; three different names, one colour. Two sections
   that read as "different" in this file were merging on screen. The one
-  remaining ink-950 pair is CTA -> footer, which is deliberate: the footer
+  remaining ink-950 pair is FAQ -> footer, which is deliberate: the footer
   card is inset into that field rather than sitting beside it.
 
   COLOUR DISCIPLINE
-  Only the hero and the closing CTA use a generous blue glow. Coral appears
+  Only the hero uses a generous blue glow. Coral appears
   only where people talk, purple only at the AI step, orange only where
   something is being imagined. If a section needs a fourth accent to make
   sense, the section is the problem.
 */
 
 export const metadata = {
-  title: "ManthanOS — One workspace for the work behind the work",
-  description:
-    "ManthanOS connects your ideas, projects, tasks, clients, meetings and content in one workspace — with ownership, approvals and handoffs already built in.",
+  /* `absolute` deliberately bypasses the "%s · ManthanOS" template from
+     app/layout.js. The home page is the brand page: the template would append
+     the company name to a title that already opens with it, and a <title> is
+     one of the three strongest on-page signals there is — it should read as a
+     sentence, not as a sentence with a suffix.
+
+     Title, description and the hero <h1> are now the same statement in the
+     same order (workspace → ideas → projects → clients → content). A crawler
+     that sees a title promising one thing and a headline promising another
+     discounts both. */
+  title: { absolute: `${siteName} — ${product.tagline}` },
+  description: product.description,
+  alternates: { canonical: "/" },
 };
 
 export default function Home() {
   return (
     <>
+      {/* Organization + WebSite + SoftwareApplication + FAQPage, rendered from
+          the same lib/ files the page itself reads. Server-rendered, so it is
+          present in the HTML whether or not JavaScript runs. */}
+      <StructuredData faq />
       <Header />
-      <main>
+      <main className="home-page">
         <Hero />
         <PipelineRail />
         <ClientsCRM />
@@ -83,10 +102,8 @@ export default function Home() {
         <MeetingsNotes />
         <AISummary />
         <Monitoring />
-        <IdeasExecution />
         <TrustSection />
         <FAQ />
-        <ClosingCTA />
       </main>
       <Footer />
     </>

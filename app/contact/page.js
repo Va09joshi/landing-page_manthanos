@@ -2,12 +2,14 @@ import { Header } from "../../components/site-header";
 import { Footer } from "../../components/site-footer";
 import { PageHead, Reveal } from "../../components/ui";
 import { LeadForm } from "../../components/forms";
+import { pageMetadata } from "../../lib/site";
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: "/contact",
   title: "Contact",
   description:
     "Tell us what you are building, where the work gets stuck, or what you want to make easier. A person reads every message.",
-};
+});
 
 /* Direct, specific routes rather than a generic "get in touch" panel. */
 const routes = [

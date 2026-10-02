@@ -3,12 +3,14 @@ import { Footer } from "../../components/site-footer";
 import { PageHead, Reveal } from "../../components/ui";
 import { LeadForm } from "../../components/forms";
 import { pipelineGroups, workspaceTypes } from "../../lib/product";
+import { pageMetadata } from "../../lib/site";
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: "/request-demo",
   title: "Request a demo",
   description:
     "See how ManthanOS fits the way your team already works. We will map one live campaign against the eleven-stage pipeline.",
-};
+});
 
 /* What actually happens in the session — stated as commitments, not adjectives. */
 const agenda = [

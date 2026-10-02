@@ -1,11 +1,13 @@
 import { Header } from "../../components/site-header";
 import { Footer } from "../../components/site-footer";
 import { PageHead, Reveal } from "../../components/ui";
+import { pageMetadata } from "../../lib/site";
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: "/terms",
   title: "Terms of service",
   description: "The terms that apply when you use ManthanOS.",
-};
+});
 
 const sections = [
   {

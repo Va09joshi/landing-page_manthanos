@@ -1,11 +1,13 @@
 import { Header } from "../../components/site-header";
 import { Footer } from "../../components/site-footer";
 import { PageHead, Reveal } from "../../components/ui";
+import { pageMetadata } from "../../lib/site";
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: "/privacy",
   title: "Privacy policy",
   description: "What ManthanOS collects, why, and what you can ask us to do about it.",
-};
+});
 
 const sections = [
   {

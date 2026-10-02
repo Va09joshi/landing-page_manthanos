@@ -7,7 +7,7 @@ import { FooterSubscribe } from "./footer-subscribe";
 const columns = [
   { title: "Product", links: [["Features", "/features"], ["Use cases", "/use-cases"], ["Pricing", "/pricing"]] },
   { title: "Resources", links: [["Journal", "/blog"], ["About", "/about"]] },
-  { title: "Account", links: [["Create an account", "/register"], ["Sign in", "/login"]] },
+  { title: "Account", links: [["Get a workspace", "/register"]] },
 ];
 
 export function Footer() {

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Reveal, StatusPill, UiWindow } from "./ui";
 
@@ -33,73 +34,27 @@ const notes = [
   { label: "Decisions", value: "3 recorded" },
   { label: "Actions", value: "4 became tasks" },
 ];
-/* A soft, abstract conversation scene. Two overlapping speech volumes and a
-   shared surface. Abstract on purpose: the people are context, the product is
-   the subject. */
+/* A friendly video-call scene with a soft ambient glow and grounded shadow. */
 function MeetingScene() {
   return (
-    <div
-      className="relative mx-auto aspect-square w-full max-w-[320px]"
-      role="img"
-      aria-label="An abstract illustration of two people in conversation, with notes being captured"
-    >
-      {/* Warm coral source, low contrast, behind the figures */}
+    <div className="relative mx-auto w-full max-w-[560px] pb-7 lg:mx-0 lg:w-[112%] lg:max-w-[650px] lg:translate-y-8">
       <div
         aria-hidden
-        className="absolute inset-0 rounded-full opacity-40 blur-[60px]"
-        style={{ background: "radial-gradient(circle at 50% 55%, rgba(251,113,133,.20), transparent 68%)" }}
+        className="absolute inset-x-[12%] bottom-8 h-[40%] rounded-full opacity-60 blur-[64px]"
+        style={{ background: "radial-gradient(ellipse, rgba(251,113,133,.16), transparent 68%)" }}
       />
-
-      <svg viewBox="0 0 320 320" className="relative h-full w-full" fill="none">
-        <defs>
-          <linearGradient id="figA" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#2b3a52" />
-            <stop offset="100%" stopColor="#18202f" />
-          </linearGradient>
-          <linearGradient id="figB" x1="1" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#243247" />
-            <stop offset="100%" stopColor="#141b27" />
-          </linearGradient>
-          <linearGradient id="desk" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#1d2736" />
-            <stop offset="100%" stopColor="#131a26" />
-          </linearGradient>
-        </defs>
-
-        {/* Figure left */}
-        <g>
-          <circle cx="108" cy="118" r="30" fill="url(#figA)" />
-          <path
-            d="M60 268c0-30 21-54 48-54s48 24 48 54z"
-            fill="url(#figA)"
-          />
-        </g>
-
-        {/* Figure right, slightly behind — depth without a busy scene */}
-        <g opacity="0.9">
-          <circle cx="212" cy="126" r="26" fill="url(#figB)" />
-          <path d="M172 268c0-26 18-47 40-47s40 21 40 47z" fill="url(#figB)" />
-        </g>
-
-        {/* Shared surface — the notes being captured between them */}
-        <rect
-          x="104"
-          y="196"
-          width="112"
-          height="76"
-          rx="10"
-          fill="url(#desk)"
-          stroke="rgba(255,255,255,.10)"
-        />
-        <rect x="118" y="212" width="60" height="4" rx="2" fill="rgba(111,161,255,.55)" />
-        <rect x="118" y="226" width="84" height="4" rx="2" fill="rgba(255,255,255,.14)" />
-        <rect x="118" y="240" width="52" height="4" rx="2" fill="rgba(255,255,255,.10)" />
-        <circle cx="196" cy="252" r="9" fill="rgba(251,113,133,.22)" stroke="rgba(251,113,133,.55)" />
-
-        {/* Live capture indicator */}
-        <circle cx="160" cy="60" r="5" fill="#FB7185" />
-        <circle cx="160" cy="60" r="10" fill="#FB7185" opacity="0.22" />
-      </svg>
+      <div
+        aria-hidden
+        className="absolute inset-x-[17%] bottom-2 h-8 rounded-[50%] bg-black/70 blur-xl"
+      />
+      <Image
+        src="/illustrations/Friendly 3D Video Meeting Interface.png"
+        alt="A friendly 3D video meeting interface with three people on a call"
+        width={1448}
+        height={1086}
+        sizes="(min-width: 1024px) 48vw, 90vw"
+        className="relative z-10 h-auto w-full drop-shadow-[0_24px_24px_rgba(0,0,0,0.48)]"
+      />
     </div>
   );
 }
@@ -108,15 +63,48 @@ export function MeetingsNotes() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="band-surface relative overflow-hidden">
-      {/* ambient-soft: already high on the ladder, a strong pool would stain. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 ambient-soft" />
+    <section
+      className="relative overflow-hidden text-chalk"
+      style={{
+        background:
+          "linear-gradient(168deg, #17233D 0%, #0F1930 26%, #0D1526 52%, #090E19 78%, #070B14 100%)",
+      }}
+    >
+      {/* ---- layered ambient: top sheen + warm coral (human) + cool blue (copy) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse 70% 42% at 50% -6%, rgba(120,160,255,0.14), transparent 62%), radial-gradient(ellipse 46% 44% at 22% 48%, rgba(251,113,133,0.15), transparent 68%), radial-gradient(ellipse 58% 52% at 80% 30%, rgba(36,95,245,0.20), transparent 68%), radial-gradient(ellipse 80% 55% at 50% 112%, rgba(2,5,12,0.7), transparent 68%)",
+        }}
+      />
+      {/* faint cool wash so the diagonal never reads flat */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(115deg, rgba(36,95,245,0.08) 0%, transparent 32%, transparent 64%, rgba(251,113,133,0.06) 100%)",
+        }}
+      />
       <div aria-hidden className="pointer-events-none absolute inset-0 mesh-dark opacity-35" />
+      {/* ground the section: soft shade top + vignette bottom, no hard seams */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[140px]"
+        style={{ background: "linear-gradient(to bottom, rgba(19,29,48,.85), transparent)" }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[180px]"
+        style={{ background: "linear-gradient(to top, rgba(2,5,12,.6), transparent)" }}
+      />
 
       <div className="shell relative band-pad">
-        <div className="grid items-center gap-14 lg:grid-cols-[.85fr_1.15fr] lg:gap-20">
+        <div>
           {/* ---- Human side --------------------------------------------- */}
-          <div>
+          <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-20">
             <Reveal>
               <div className="flex justify-center lg:justify-start">
                 <MeetingScene />
@@ -124,22 +112,29 @@ export function MeetingsNotes() {
             </Reveal>
 
             <Reveal delay={0.1}>
-              <div className="mt-10">
+              <div className="mt-10 lg:mt-0">
                 <p className="eyebrow">Meetings &amp; notes</p>
-                <h2 className="mt-5 max-w-[24ch] text-[clamp(26px,3.3vw,42px)] font-semibold leading-[1.08] text-white">
+                <h2 className="mt-5 max-w-[24ch] text-[clamp(30px,3.6vw,48px)] font-semibold leading-[1.08] text-white">
                   The meeting ends. The notes do not have to.
                 </h2>
-                <p className="lede mt-5 max-w-[46ch]">
+                <p className="lede mt-5 max-w-[50ch] text-[18px] leading-8">
                   ManthanOS joins the call, writes the transcript, and turns what
                   was actually decided into tasks with owners — attached to the
                   project the meeting was about.
                 </p>
+                <blockquote className="mt-8 flex max-w-[46ch] items-start gap-4 text-[19px] italic leading-8 text-white/65">
+                  <span aria-hidden className="-mt-2 font-sans text-6xl not-italic leading-none text-status-coral/80">“</span>
+                  <p>
+                    A good meeting should leave behind clear decisions, not more
+                    questions about what happens next.
+                  </p>
+                </blockquote>
               </div>
             </Reveal>
           </div>
 
           {/* ---- Product side: the real meeting interface ---------------- */}
-          <Reveal delay={0.08}>
+          {false && <Reveal delay={0.08}>
             <UiWindow label="Meetings · live room">
               <div className="p-6 sm:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-4">
@@ -188,7 +183,7 @@ export function MeetingsNotes() {
                 </dl>
               </div>
             </UiWindow>
-          </Reveal>
+          </Reveal>}
         </div>
       </div>
     </section>

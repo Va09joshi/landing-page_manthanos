@@ -8,10 +8,8 @@ import { Logomark } from "./ui";
 
 export const navLinks = [
   ["Product", "/features"],
-  ["Use cases", "/use-cases"],
   ["Pricing", "/pricing"],
-  ["Journal", "/blog"],
-  ["About", "/about"],
+  ["Blog", "/blog"],
 ];
 
 export function Logo() {
@@ -113,36 +111,29 @@ export function Header() {
             })}
           </nav>
 
-          {/* ---- Right: actions ---------------------------------------- */}
+          {/* ---- Right: actions ----------------------------------------
+              "Get a workspace" is dressed as a button, not a text link. As a
+              text link it sat in the same weight and colour as the nav items
+              beside it, so the bar read as four destinations with no action in
+              it. The pill is the primary tone from ui.js — same blue, same
+              border and shadow as every other primary button on the site — so
+              the nav's one action is unmistakably the one to press. */}
           <div className="flex shrink-0 items-center gap-2">
             <Link
-              href="/login"
-              className="hidden rounded-full px-4 py-2 text-[14px] font-medium text-chalk-dim transition-colors hover:text-white lg:inline-flex"
+              href="/register"
+              className="hidden h-10 items-center gap-2 rounded-full border border-royal-400/40 bg-royal-500 px-5 text-[14px] font-medium text-white shadow-[0_10px_22px_-9px_rgba(0,0,0,.92),0_5px_14px_-7px_rgba(36,95,245,.72)] transition-colors hover:border-royal-400 hover:bg-royal-400 lg:inline-flex"
             >
-              Sign in
+              Get a workspace
             </Link>
 
-            {/* The single pill CTA. Solid blue on hover, outlined at rest —
-                the reference pattern, and it keeps the loudest element on the
-                page inside the hero rather than in the chrome. */}
-            <Link
-              href="/request-demo"
-              className="group inline-flex h-10 items-center gap-1.5 rounded-full border border-white/[.14] bg-white/[.05] px-4 text-[14px] font-medium text-white transition-colors duration-200 hover:border-royal-400/60 hover:bg-royal-500 lg:px-5"
-            >
-              Book a demo
-              <ArrowUpRight
-                size={15}
-                className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-              />
-            </Link>
-
+            {/* Get a workspace is the primary CTA in the nav now */}
             <button
               type="button"
               onClick={() => setOpen((value) => !value)}
               aria-expanded={open}
               aria-controls="mobile-nav"
               aria-label={open ? "Close menu" : "Open menu"}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[.12] text-white transition-colors hover:bg-white/[.06] lg:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[.12] text-white shadow-[0_8px_18px_-10px_rgba(0,0,0,.95)] transition-colors hover:bg-white/[.06] lg:hidden"
             >
               {open ? <X size={18} /> : <Menu size={18} />}
             </button>
@@ -176,11 +167,13 @@ export function Header() {
               })}
             </nav>
             <div className="my-2 h-px bg-white/[.08]" />
+            {/* Same primary treatment as the desktop pill, so the sheet's one
+                action does not downgrade to a list row on a phone. */}
             <Link
-              href="/login"
-              className="flex items-center rounded-[12px] px-4 py-3.5 text-[15px] font-medium text-chalk-dim transition-colors hover:bg-white/[.04] hover:text-white"
+              href="/register"
+              className="flex h-10 items-center justify-center gap-2 rounded-full border border-royal-400/40 bg-royal-500 px-5 text-[14px] font-medium text-white shadow-[0_10px_22px_-9px_rgba(0,0,0,.92),0_5px_14px_-7px_rgba(36,95,245,.72)] transition-colors hover:border-royal-400 hover:bg-royal-400"
             >
-              Sign in
+              Get a workspace
             </Link>
           </div>
         )}

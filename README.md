@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+  <a href="https://manthanos.app">
+    <img src="./public/logo.png" alt="ManthanOS" width="360" />
+  </a>
 
-## Getting Started
+  <br />
+  <br />
 
-First, run the development server:
+  **One workspace for ideas, projects, clients, and content.**
+
+  The public website for ManthanOS—a connected operating system for creator teams,
+  agencies, and companies.
+
+  [Visit the website](https://manthanos.app) · [Explore features](https://manthanos.app/features) · [Request a demo](https://manthanos.app/request-demo)
+</div>
+
+## About
+
+This repository contains the public-facing ManthanOS experience. It introduces the product, explains its workflows, publishes product updates, and connects prospective teams with the ManthanOS platform.
+
+ManthanOS brings ideas, projects, tasks, clients, meetings, and content into one workspace, with ownership, approvals, permissions, and handoffs built in.
+
+## What is included
+
+- Product landing page with interactive workflow sections
+- Feature, use-case, pricing, and company pages
+- Public blog with dynamic article routes
+- Workspace application and demo-request flows
+- Login, registration, and invitation acceptance entry points
+- SEO metadata and structured data for search and social sharing
+- Responsive motion, 3D, and illustration-based product storytelling
+
+## Built with
+
+- [Next.js 16](https://nextjs.org/) and the App Router
+- [React 19](https://react.dev/)
+- [Tailwind CSS 4](https://tailwindcss.com/)
+- [Motion](https://motion.dev/) for interface animation
+- [React Three Fiber](https://r3f.docs.pmnd.rs/) and [Three.js](https://threejs.org/) for 3D experiences
+- [Lucide](https://lucide.dev/) for interface icons
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 20.9 or newer
+- npm
+- A running ManthanOS API for forms, authentication, and blog content
+
+### Installation
+
+```bash
+cd manthanos-public
+npm install
+```
+
+Create `.env.local` in the project root:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api
+```
+
+`NEXT_PUBLIC_API_URL` is also supported for compatibility. If neither variable is set during local development, the app uses `http://localhost:5000/api`. Production deployments must configure an API URL.
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Available commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the development server on port 3000 |
+| `npm run build` | Create an optimized production build |
+| `npm run start` | Run the production build |
+| `npm run lint` | Check the project with ESLint |
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```text
+manthanos-public/
+├── app/                  # Routes, layouts, metadata, and server endpoints
+├── components/           # Shared sections and interface components
+├── lib/                  # API client, product copy, FAQs, and site config
+├── public/               # Brand assets, illustrations, and screenshots
+├── docs/                 # Supporting implementation notes
+└── next.config.mjs       # Next.js and security-header configuration
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Key routes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Route | Purpose |
+| --- | --- |
+| `/` | Product overview |
+| `/features` | Platform capabilities |
+| `/use-cases` | Workflows for different teams |
+| `/pricing` | Plans and pricing information |
+| `/blog` | Public articles and updates |
+| `/request-demo` | Demo request flow |
+| `/contact` | Contact and enquiry form |
+| `/login` | Existing-user sign in |
+| `/register` | New-user registration |
 
-## Deploy on Vercel
+## Production deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Before deploying, set `NEXT_PUBLIC_API_BASE_URL` to the public backend URL, including or excluding the trailing `/api`—the client normalizes both forms.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```env
+NEXT_PUBLIC_API_BASE_URL=https://api.example.com/api
+```
+
+Then verify the production build locally:
+
+```bash
+npm run lint
+npm run build
+npm run start
+```
+
+The canonical website origin is defined in `lib/site.js`. Update it when deploying to a different permanent domain so canonical links, Open Graph metadata, and structured data remain consistent.
+
+## Contributing
+
+ManthanOS is currently maintained as a private product. If you are contributing as a team member, create a focused branch, keep product copy grounded in shipped functionality, and run both lint and build checks before opening a pull request.
+
+## License
+
+This project is private and proprietary. All rights reserved.
+
+---
+
+<div align="center">
+  Built for teams that want the work—and the context around it—in one place.
+</div>

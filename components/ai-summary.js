@@ -48,15 +48,15 @@ export function AISummary() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="band-dark relative overflow-hidden">
+    <section className="ai-summary-light relative overflow-hidden">
       {/* Ambient first, lattice on top: light under texture, never over it. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 ambient" />
-      <div aria-hidden className="pointer-events-none absolute inset-0 mesh-dark opacity-45" />
+      <div aria-hidden className="ai-summary-wash pointer-events-none absolute inset-0" />
+      <div aria-hidden className="ai-summary-grid pointer-events-none absolute inset-0" />
       {/* Purple sits behind the AI step only — the one transformation on the page. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-16 h-[420px] w-[520px] -translate-x-1/2 rounded-full opacity-[.07] blur-[130px]"
-        style={{ background: "radial-gradient(circle, #A78BFA 0%, transparent 70%)" }}
+        className="pointer-events-none absolute left-[62%] top-20 h-[360px] w-[480px] -translate-x-1/2 rounded-full opacity-[.12] blur-[120px]"
+        style={{ background: "radial-gradient(circle, #8DB5FF 0%, transparent 70%)" }}
       />
 
       <div className="shell relative band-pad">
@@ -64,6 +64,7 @@ export function AISummary() {
           <SectionHead
             eyebrow="AI meeting summary"
             title="The part everyone actually wanted from the call."
+            className="ai-summary-heading"
             lede="Not a novelty. After a meeting, ManthanOS gives you the points that were made, the decisions that were reached, and the tasks that came out of them — already attached to the right project."
           />
         </Reveal>
@@ -74,7 +75,7 @@ export function AISummary() {
           <figure className="relative z-10 mx-auto mt-1 h-[190px] w-full sm:h-[230px] lg:-mt-[220px] lg:ml-auto lg:mr-2 lg:h-[270px] lg:w-[46%]">
             <div
               aria-hidden
-              className="absolute bottom-2 left-1/2 h-10 w-[62%] -translate-x-1/2 rounded-full bg-royal-400/25 blur-2xl sm:h-12 lg:bottom-4"
+              className="absolute bottom-2 left-1/2 h-10 w-[62%] -translate-x-1/2 rounded-full bg-royal-400/15 blur-2xl sm:h-12 lg:bottom-4"
             />
             <Image
               src="/illustrations/AI Meeting-to-Tasks Workflow.png"
@@ -82,7 +83,7 @@ export function AISummary() {
               width={1448}
               height={1086}
               sizes="(min-width: 1024px) 520px, (min-width: 640px) 72vw, 112vw"
-              className="absolute left-1/2 top-1/2 w-[112%] max-w-none -translate-x-1/2 -translate-y-[51%] drop-shadow-[0_20px_20px_rgba(75,130,242,0.28)] sm:w-[72%] lg:w-full"
+              className="absolute left-1/2 top-1/2 w-[112%] max-w-none -translate-x-1/2 -translate-y-[51%] drop-shadow-[0_20px_22px_rgba(45,83,160,0.18)] sm:w-[72%] lg:w-full"
               priority={false}
             />
           </figure>
@@ -90,18 +91,18 @@ export function AISummary() {
 
         {/* ---- Horizontal progression ------------------------------------ */}
         <Reveal delay={0.08}>
-          <ol className="relative z-0 mt-8 grid gap-px overflow-hidden rounded-[12px] border border-white/[.09] bg-white/[.09] shadow-[0_-24px_70px_-34px_rgba(0,0,0,0.95)] sm:mt-10 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
+          <ol className="ai-summary-steps relative z-0 mt-8 grid gap-px overflow-hidden rounded-[14px] border sm:mt-10 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
             {steps.map((step, index) => (
               <li
                 key={step.id}
-                className={`relative px-5 py-6 ${step.ai ? "bg-ink-850" : "bg-ink-900"}`}
+                className={`relative px-5 py-6 ${step.ai ? "ai-summary-step-active" : "ai-summary-step"}`}
               >
                 <div className="flex items-center gap-2.5">
                   <span
                     className={`flex h-6 w-6 items-center justify-center rounded-full border font-mono text-[10px] ${
                       step.ai
                         ? "border-status-purple/40 bg-status-purple/12 text-status-purple"
-                        : "border-white/12 text-white/30"
+                        : "ai-summary-step-number"
                     }`}
                   >
                     {index + 1}
@@ -112,11 +113,11 @@ export function AISummary() {
                     </span>
                   )}
                 </div>
-                <p className="mt-4 text-[15px] font-semibold text-white">{step.label}</p>
-                <p className="mt-1.5 text-[13px] leading-6 text-chalk-dim">{step.note}</p>
+                <p className="ai-summary-step-title mt-4 text-[15px] font-semibold">{step.label}</p>
+                <p className="ai-summary-step-copy mt-1.5 text-[13px] leading-6">{step.note}</p>
                 {index < steps.length - 1 && (
                   <span
-                    className="absolute -right-1.5 top-1/2 z-10 hidden h-px w-3 bg-white/15 lg:block"
+                    className="ai-summary-connector absolute -right-1.5 top-1/2 z-10 hidden h-px w-3 lg:block"
                     aria-hidden
                   />
                 )}
@@ -127,7 +128,7 @@ export function AISummary() {
 
         {/* ---- The real summary interface ------------------------------- */}
         <Reveal delay={0.12}>
-          <UiWindow label="Meetings · AI summary" className="mt-4">
+          <UiWindow label="Meetings · AI summary" className="ai-summary-window mt-4">
             <div className="p-6 sm:p-7">
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/[.08] pb-5">
                 <div>

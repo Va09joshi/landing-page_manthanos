@@ -37,7 +37,7 @@ export function PipelineRail() {
   };
 
   return (
-    <section className="band-light relative z-10 overflow-hidden">
+    <section className="band-light relative z-10 overflow-hidden border-t border-slate-200/80">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
 
       <div className="shell relative py-[clamp(76px,10vw,152px)] lg:pb-[152px] lg:pt-[240px]">

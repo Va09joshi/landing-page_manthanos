@@ -19,6 +19,15 @@ import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
    quarter of the intended size — the smudge in the footer. These dimensions
    match the file exactly, so `h-* w-auto` is always correct. Never pass a
    width/height pair whose ratio disagrees with the source image.
+
+   The base deliberately sets WIDTH ONLY (`w-auto`) and never a height. A
+   height utility here would fight the caller: Tailwind emits `.h-auto` after
+   its arbitrary values, so `h-auto` placed in this prefix beat every caller's
+   `h-[22px]` / `h-[27px]` below the `lg` breakpoint. The image carries
+   `width={448} height={79}` intrinsics, so the winning declaration was
+   `height:auto` + `width:auto` — the wordmark rendered at its full 448x79 on
+   phones, overflowed the header pill, and pushed the menu button off-screen.
+   Every call site passes its own height, so the base must not supply one.
    ------------------------------------------------------------------------- */
 const LOGO_W = 448;
 const LOGO_H = 79;
@@ -30,7 +39,7 @@ export function Logomark({ className = "" }) {
       alt="ManthanOS"
       width={LOGO_W}
       height={LOGO_H}
-      className={`h-auto w-auto ${className}`}
+      className={`w-auto ${className}`}
       priority
     />
   );
@@ -289,6 +298,12 @@ export function UiWindow({ label, children, className = "", bodyClassName = "" }
    immediately.
    ------------------------------------------------------------------------- */
 
+/* `data-reveal` is what makes the entrance animation optional.
+
+   The hidden state lives in this element's inline style, so a browser without
+   JavaScript would render it at opacity 0 forever. The marker lets the noscript
+   block in app/layout.js lift it back to visible without touching the animated
+   case at all. Any new animated wrapper should carry the same attribute. */
 export function Reveal({ children, delay = 0, y = 16, className = "" }) {
   const reduced = useReducedMotion();
   if (reduced) return <div className={className}>{children}</div>;
@@ -296,6 +311,7 @@ export function Reveal({ children, delay = 0, y = 16, className = "" }) {
   return (
     <motion.div
       className={className}
+      data-reveal=""
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2, margin: "0px 0px -60px 0px" }}

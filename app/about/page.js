@@ -3,13 +3,14 @@ import { ArrowUpRight } from "lucide-react";
 import { Header } from "../../components/site-header";
 import { Footer } from "../../components/site-footer";
 import { PageHead, Reveal, SectionHead } from "../../components/ui";
-import { ClosingCTA } from "../../components/closing-cta";
+import { pageMetadata } from "../../lib/site";
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: "/about",
   title: "About",
   description:
     "ManthanOS is a multi-portal operations platform for creator teams, agencies and companies — built so operational work stops competing with the craft.",
-};
+});
 
 /* Stated as positions rather than adjectives. */
 const positions = [
@@ -110,8 +111,6 @@ export default function About() {
             </div>
           </div>
         </section>
-
-        <ClosingCTA />
       </main>
       <Footer />
     </>

@@ -4,14 +4,15 @@ import { PageHead, Reveal, SectionHead, StatusPill } from "../../components/ui";
 import { ModuleBento } from "../../components/module-bento";
 import { PipelineRail } from "../../components/pipeline-rail";
 import { WorkspaceShowcase } from "../../components/workspace-showcase";
-import { ClosingCTA } from "../../components/closing-cta";
 import { platforms } from "../../lib/product";
+import { pageMetadata } from "../../lib/site";
 
-export const metadata = {
+export const metadata = pageMetadata({
+  path: "/features",
   title: "Features",
   description:
     "Fourteen modules, eleven production stages and eight permission levels. Explore the ManthanOS workspace from the ideas engine to channel analytics.",
-};
+});
 
 /* One deep dive per module group, each naming the specific thing it does. */
 const deepDives = [
@@ -143,7 +144,6 @@ export default function Features() {
         </section>
 
         <WorkspaceShowcase />
-        <ClosingCTA />
       </main>
       <Footer />
     </>

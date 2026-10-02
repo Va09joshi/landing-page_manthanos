@@ -116,12 +116,12 @@ export function ClientsCRM() {
 
           {/* ---- The product: one large client record -------------------- */}
           <Reveal delay={0.08}>
-            <UiWindow label="Clients · client record">
-              <div className="p-6 sm:p-7">
+            <UiWindow label="Clients · client record" className="client-record-window">
+              <div className="client-record-body p-6 sm:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
                     <span
-                      className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-royal-400/25 bg-royal-500/10 text-[14px] font-semibold text-soft"
+                      className="client-record-avatar flex h-11 w-11 items-center justify-center rounded-[10px] text-[14px] font-semibold text-soft"
                       aria-hidden
                     >
                       N
@@ -133,7 +133,7 @@ export function ClientsCRM() {
                       <p className="mt-1 text-[13px] text-chalk-dim">{record.meta}</p>
                     </div>
                   </div>
-                  <StatusPill tone="ok">Active</StatusPill>
+                  <StatusPill tone="ok" className="client-record-status">Active</StatusPill>
                 </div>
 
                 <div className="mt-8">
@@ -146,14 +146,14 @@ export function ClientsCRM() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.4 }}
                         transition={{ duration: 0.4, delay: index * 0.07 }}
-                        className="ui-well ui-row px-4 py-3.5"
+                        className={`ui-well ui-row client-project-row client-project-row-${index + 1} px-4 py-3.5`}
                       >
                         <div className="flex items-center justify-between gap-4">
                           <div className="min-w-0">
                             <p className="truncate text-[14px] font-medium text-white">{row.label}</p>
                             <p className="mt-0.5 truncate text-[12.5px] text-chalk-dim">{row.detail}</p>
                           </div>
-                          <span className="track w-24 shrink-0">
+                          <span className="track client-progress-track w-24 shrink-0">
                             <span className={barColor[row.tone]} style={{ width: `${row.value}%` }} />
                           </span>
                         </div>
@@ -163,7 +163,7 @@ export function ClientsCRM() {
                 </div>
 
                 {/* Communication — the one place coral is used */}
-                <div className="mt-6 rounded-[10px] border border-status-coral/18 bg-status-coral/[.05] px-4 py-3.5">
+                <div className="client-communication mt-6 rounded-[10px] px-4 py-3.5">
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-status-coral" aria-hidden />
                     <p className="text-[12px] font-medium text-white">{record.communication.label}</p>
@@ -174,7 +174,7 @@ export function ClientsCRM() {
                   <p className="mt-2 text-[13.5px] leading-6 text-chalk">{record.communication.body}</p>
                 </div>
 
-                <div className="mt-6 grid grid-cols-3 border-t border-white/[.08] pt-5">
+                <div className="client-delivery mt-6 grid grid-cols-3 pt-5">
                   {record.delivery.map(([label, value], index) => (
                     <div key={label} className={index > 0 ? "border-l border-white/[.08] pl-5" : ""}>
                       <p className="text-[19px] font-semibold leading-none text-white">{value}</p>
