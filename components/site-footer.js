@@ -39,7 +39,7 @@ export function Footer() {
               <Link href="/" aria-label="ManthanOS home" className="inline-flex min-h-10 items-center rounded-sm"><Logomark className="h-[27px] w-auto lg:h-[29px]" /></Link>
               <p className="mt-3 max-w-[34ch] text-[14px] leading-6 text-slate-400">One workspace for your ideas, projects and everything in between.</p>
               <Link href="/request-demo" className="group mt-5 inline-flex min-h-11 items-center gap-3 rounded-lg border border-white/15 bg-white/5 px-4 text-[14px] font-medium text-white transition-colors hover:border-royal-400/60 hover:bg-royal-500">
-                Book a demo<ArrowRight aria-hidden="true" size={17} className="transition-transform group-hover:translate-x-1 motion-reduce:transform-none" />
+                Request a workspace<ArrowRight aria-hidden="true" size={17} className="transition-transform group-hover:translate-x-1 motion-reduce:transform-none" />
               </Link>
             </div>
             <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-8 min-[480px]:grid-cols-3 lg:gap-x-10">

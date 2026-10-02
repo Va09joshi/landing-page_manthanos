@@ -6,8 +6,8 @@ import {
   Building2,
   Check,
   CheckCircle2,
-  Clapperboard,
   Loader2,
+  Palette,
 } from "lucide-react";
 import { useState } from "react";
 import { api } from "../lib/api";
@@ -39,7 +39,8 @@ const workspaceTypes = {
     description: "For YouTubers, studios, editors and managers.",
     detail: "Ideas → scripts → edits → approvals → publishing, plus brand deals and channel numbers.",
     features: ["Content pipeline", "Publishing calendar", "Brand deals", "Channel analytics"],
-    Icon: Clapperboard,
+    Icon: Palette,
+    iconClass: "border-[#8175d5]/55 bg-[linear-gradient(145deg,#8274e8_0%,#5040ae_68%,#292261_100%)] shadow-[inset_2px_2px_0_rgba(255,255,255,.2),inset_-3px_-4px_0_rgba(13,10,38,.62),0_3px_0_#17132f,0_10px_18px_-8px_rgba(3,5,15,.98)]",
   },
   COMPANY: {
     label: "Company",
@@ -48,6 +49,7 @@ const workspaceTypes = {
     detail: "Leads → client work → approvals → delivery, with departments and clear permissions.",
     features: ["Simple CRM", "Client projects", "Approvals", "Team roles"],
     Icon: Building2,
+    iconClass: "border-[#3d7bff]/50 bg-[linear-gradient(145deg,#3478ff_0%,#1748bb_68%,#10337f_100%)] shadow-[inset_2px_2px_0_rgba(255,255,255,.18),inset_-3px_-4px_0_rgba(4,18,63,.35),0_8px_16px_-7px_rgba(36,95,245,.95)]",
   },
 };
 
@@ -149,8 +151,10 @@ export function WorkspaceApplicationForm() {
 
   if (state.done) {
     return (
-      <div className="rounded-2xl border border-emerald-500/20 bg-emerald-950/30 p-8 text-center" role="status">
-        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-900/50 text-emerald-400"><CheckCircle2 size={32} strokeWidth={2.5} /></span>
+      <div className="mx-auto flex min-h-[420px] w-full max-w-[560px] flex-col items-center justify-center rounded-2xl border border-emerald-500/25 bg-[linear-gradient(145deg,rgba(6,45,44,.92),rgba(3,25,33,.96))] p-8 text-center shadow-[inset_2px_2px_0_rgba(255,255,255,.05),inset_-4px_-5px_0_rgba(0,0,0,.3),0_14px_26px_-18px_rgba(0,0,0,.95)]" role="status">
+        <span className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-[20px] border border-emerald-300/40 bg-[linear-gradient(145deg,#16c99c,#08745f)] text-emerald-50 shadow-[inset_2px_2px_0_rgba(255,255,255,.28),inset_-3px_-4px_0_rgba(0,48,42,.5),0_5px_0_#064b43,0_12px_18px_-10px_rgba(0,0,0,.95)] before:absolute before:inset-[4px] before:rounded-[16px] before:border before:border-white/15 before:content-['']">
+          <span className="relative z-[1] drop-shadow-[0_2px_1px_rgba(0,35,31,.7)]"><CheckCircle2 size={32} strokeWidth={2.5} /></span>
+        </span>
         <p className="mt-5 text-[12px] font-black uppercase tracking-[.18em] text-emerald-400">Application sent</p>
         <h2 className="mt-2 text-2xl font-bold text-white">We'll review your workspace.</h2>
         <p className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-[#9fb0cc]">We'll send the decision and secure owner access to <strong>{form.email}</strong>. No workspace is created until the application is approved.</p>
@@ -207,8 +211,10 @@ export function WorkspaceApplicationForm() {
             {/* Detail panel (Compact) */}
             <div className="rounded-2xl border border-[#1a263c] bg-[#0b1422] p-7">
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-royal-500/20 text-royal-400">
-                  <ActiveIcon size={20} />
+                <span className={`relative flex h-11 w-11 items-center justify-center rounded-[13px] border text-[#e8f0ff] before:absolute before:inset-[3px] before:rounded-[10px] before:border before:border-white/15 before:content-[''] ${activeType.iconClass}`}>
+                  <span className="relative z-[1] drop-shadow-[0_2px_1px_rgba(4,18,63,.6)]">
+                    <ActiveIcon size={20} strokeWidth={2.2} />
+                  </span>
                 </span>
                 <p className="text-[13px] font-black uppercase tracking-[.14em] text-royal-400">{activeType.label}</p>
               </div>
