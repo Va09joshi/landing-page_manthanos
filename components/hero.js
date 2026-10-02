@@ -92,7 +92,7 @@ export function Hero() {
               className="mt-10 flex flex-wrap items-center gap-3"
             >
               <Link
-                href="/request-demo"
+                href="/register"
                 className="group inline-flex h-[54px] items-center gap-2 rounded-[10px] bg-royal-500 px-8 text-[15px] font-medium text-white border border-royal-400/40 shadow-[0_6px_20px_-8px_rgba(36,95,245,.7)] transition-all hover:bg-royal-400 hover:shadow-[0_10px_30px_-8px_rgba(36,95,245,.85)]"
               >
                 Request a workspace

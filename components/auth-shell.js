@@ -46,9 +46,6 @@ export function AuthShell({ title, subtitle, children, footer }) {
             <ArrowLeft size={16} /> Back
           </Link>
           <div className="auth-content-inner pt-24">
-            <div className="auth-mini-brand">
-              <span className="auth-mini-logo"><Logomark className="h-[22px] w-auto" /></span>
-            </div>
             <h1>{title}</h1>
             {subtitle && <p className="auth-subtitle">{subtitle}</p>}
             <div className="auth-form-slot">{children}</div>

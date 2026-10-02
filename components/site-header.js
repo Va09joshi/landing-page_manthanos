@@ -15,8 +15,12 @@ export const navLinks = [
 
 export function Logo() {
   return (
-    <Link href="/" aria-label="ManthanOS home" className="group inline-flex items-center">
-      <Logomark className="h-[22px] lg:h-[24px]" />
+    <Link
+      href="/"
+      aria-label="ManthanOS home"
+      className="group inline-flex shrink-0 items-center"
+    >
+      <Logomark className="h-[27px] max-w-none object-contain lg:h-[30px]" />
     </Link>
   );
 }
@@ -51,8 +55,6 @@ export function Header() {
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => setOpen(false), [pathname]);
 
   // Escape closes the mobile sheet; the sheet is a dialog-like surface.
   useEffect(() => {
@@ -156,6 +158,7 @@ export function Header() {
                   <Link
                     key={href}
                     href={href}
+                    onClick={() => setOpen(false)}
                     aria-current={active ? "page" : undefined}
                     className={`flex items-center justify-between rounded-[12px] px-4 py-3.5 text-[15px] font-medium transition-colors ${
                       active ? "bg-white/[.07] text-white" : "text-chalk-dim hover:bg-white/[.04] hover:text-white"
@@ -172,6 +175,7 @@ export function Header() {
                 action does not downgrade to a list row on a phone. */}
             <Link
               href="/register"
+              onClick={() => setOpen(false)}
               className="flex h-10 items-center justify-center gap-2 rounded-full border border-royal-400/40 bg-royal-500 px-5 text-[14px] font-medium text-white shadow-[0_10px_22px_-9px_rgba(0,0,0,.92),0_5px_14px_-7px_rgba(36,95,245,.72)] transition-colors hover:border-royal-400 hover:bg-royal-400"
             >
               Get a workspace

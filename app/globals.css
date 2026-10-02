@@ -391,22 +391,6 @@
     flex-shrink: 0;
   }
 
-  /* ---- Auth mini brand ------------------------------------------------ */
-  .auth-mini-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-  .auth-mini-logo { display: flex; align-items: center; }
-  .auth-mini-text {
-    font-size: 11.5px;
-    color: #9aabbf;
-    padding-left: 10px;
-    border-left: 1px solid #d5dfe8;
-  }
-  .auth-mini-text i { color: #b2becc; font-style: normal; }
-
   @media (max-width: 900px) {
     .auth-stage { padding: 0; }
     .auth-window { width: 100%; min-height: 100dvh; border: 0; border-radius: 0; grid-template-columns: 1fr; }
@@ -1390,7 +1374,7 @@ main > section:last-child,
 }
 .workspace-choice-card[data-tone="company"] { --workspace-accent: #eb5570; --workspace-soft: #fff0f3; }
 .workspace-choice-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--workspace-accent) 48%, #b9c6da); box-shadow: 0 24px 48px -32px rgba(31, 54, 96, .42); }
-.workspace-choice-card[data-active="true"] { border-style: solid; border-color: var(--workspace-accent); background: linear-gradient(145deg, #fff, var(--workspace-soft)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--workspace-accent) 10%, transparent), 0 24px 50px -32px color-mix(in srgb, var(--workspace-accent) 58%, transparent); }
+.workspace-choice-card[data-active="true"] { border-style: solid; border-color: var(--workspace-accent); background: linear-gradient(145deg, #fff, var(--workspace-soft)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--workspace-accent) 10%, transparent), 0 18px 38px -14px rgba(0, 0, 0, .42); }
 .workspace-choice-topline { display: flex; align-items: flex-start; justify-content: space-between; }
 .workspace-choice-icon { position: relative; display: grid; width: 56px; height: 56px; place-items: center; border: 1px solid color-mix(in srgb, var(--workspace-accent) 35%, transparent); border-radius: 16px; background: linear-gradient(145deg, #fff, var(--workspace-soft)); color: var(--workspace-accent); box-shadow: inset 2px 2px 0 #fff, inset -4px -5px 8px color-mix(in srgb, var(--workspace-accent) 15%, transparent), 0 7px 0 color-mix(in srgb, var(--workspace-accent) 20%, #d8e1ef), 0 16px 22px -12px color-mix(in srgb, var(--workspace-accent) 58%, transparent); transform: rotate(-5deg); }
 .workspace-choice-icon svg { filter: drop-shadow(0 2px 1px rgba(38, 55, 90, .18)); transform: rotate(5deg); }
