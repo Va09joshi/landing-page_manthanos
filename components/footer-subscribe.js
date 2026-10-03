@@ -15,7 +15,7 @@ export function FooterSubscribe() {
     if (state === "loading" || state === "done") return;
     setState("loading");
     try {
-      await api.lead({ email: email.trim(), source: "newsletter" });
+      await api.subscribe({ email: email.trim(), source: "newsletter" });
       setState("done");
       setMessage("You're on the list. Look out for our next update.");
       setEmail("");

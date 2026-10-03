@@ -122,6 +122,7 @@ export function Header() {
               border and shadow as every other primary button on the site — so
               the nav's one action is unmistakably the one to press. */}
           <div className="flex shrink-0 items-center gap-2">
+            <Link href="/request-demo" className="hidden rounded-full px-3 py-2 text-[13px] font-semibold text-chalk-dim transition-colors hover:bg-white/[.06] hover:text-white md:inline-flex">Request demo</Link>
             <Link
               href="/register"
               className="hidden h-10 items-center gap-2 rounded-full border border-royal-400/40 bg-royal-500 px-5 text-[14px] font-medium text-white shadow-[0_10px_22px_-9px_rgba(0,0,0,.92),0_5px_14px_-7px_rgba(36,95,245,.72)] transition-colors hover:border-royal-400 hover:bg-royal-400 lg:inline-flex"
@@ -171,6 +172,7 @@ export function Header() {
               })}
             </nav>
             <div className="my-2 h-px bg-white/[.08]" />
+            <Link href="/request-demo" onClick={() => setOpen(false)} className="flex items-center justify-between rounded-[12px] px-4 py-3.5 text-[15px] font-medium text-chalk-dim hover:bg-white/[.04] hover:text-white">Request a demo<ArrowUpRight size={15} /></Link>
             {/* Same primary treatment as the desktop pill, so the sheet's one
                 action does not downgrade to a list row on a phone. */}
             <Link
