@@ -39,7 +39,7 @@ export function ContentCreative() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="band-deep relative z-20">
+    <section className="band-deep relative z-20 border-t border-white/[.07]">
       {/* Seam blend: soften the hard step from the previous (ink-900) band
           into this ink-800 band so there is no sharp dividing line. */}
       <div
@@ -53,6 +53,32 @@ export function ContentCreative() {
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 ambient-soft" />
         <div className="absolute inset-0 mesh-dark opacity-40" />
+      </div>
+
+      {/* On a phone the robot belongs to the seam, not to the body of the
+          section. Half of it reaches into the story above while the lower
+          half introduces creative work below the divider. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-0 z-30 w-[108vw] max-w-[500px] -translate-x-1/2 -translate-y-[40%] sm:hidden"
+      >
+        <motion.div
+          initial={reduced ? false : { opacity: 0, y: 18, scale: 0.96 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative"
+        >
+          <div className="absolute bottom-[5%] left-1/2 h-[15%] w-[72%] -translate-x-1/2 rounded-[50%] bg-black/80 blur-[22px]" />
+          <Image
+            src="/illustrations/ChatGPT Image Oct 2, 2026, 11_20_25 PM.png"
+            alt=""
+            width={1672}
+            height={941}
+            sizes="112vw"
+            className="relative h-auto w-full drop-shadow-[0_22px_24px_rgba(2,6,15,.82)]"
+          />
+        </motion.div>
       </div>
 
       {/* The robot is the source of the system below it. This cable makes that
@@ -90,9 +116,9 @@ export function ContentCreative() {
         </svg>
       </div>
 
-      <div className="shell relative band-pad !pt-[clamp(82px,8vw,128px)]">
+      <div className="shell relative band-pad !pt-[190px] sm:!pt-[clamp(82px,8vw,128px)]">
         {/* ---- Header follows the seam illustration composition ---------- */}
-        <div className="relative grid min-h-[clamp(500px,43vw,640px)] items-center gap-8 lg:grid-cols-[minmax(0,.8fr)_minmax(620px,1.2fr)] lg:gap-0">
+        <div className="relative grid items-center gap-8 sm:min-h-[clamp(500px,43vw,640px)] lg:grid-cols-[minmax(0,.8fr)_minmax(620px,1.2fr)] lg:gap-0">
             <div className="relative z-20 max-w-[610px] py-6 lg:py-14">
               <p className="eyebrow">Content &amp; creative work</p>
               <h2 className="creative-heading mt-7 max-w-[13ch] text-balance font-semibold text-white">
@@ -105,7 +131,7 @@ export function ContentCreative() {
                 final_v3.
               </p>
             </div>
-          <div aria-hidden="true" className="relative z-10 -mx-5 self-center sm:mx-auto sm:w-[min(94vw,880px)] lg:absolute lg:-right-[7vw] lg:top-[34%] lg:w-[min(72vw,1160px)] lg:-translate-y-[62%]">
+          <div aria-hidden="true" className="relative z-10 hidden self-center sm:mx-auto sm:block sm:w-[min(94vw,880px)] lg:absolute lg:-right-[7vw] lg:top-[34%] lg:w-[min(72vw,1160px)] lg:-translate-y-[62%]">
             <div className="absolute bottom-[1%] left-1/2 h-[12%] w-[78%] -translate-x-1/2 rounded-[50%] bg-black/75 blur-[32px] sm:blur-[48px]" />
             <Image
               src="/illustrations/ChatGPT Image Oct 2, 2026, 11_20_25 PM.png"

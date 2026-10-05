@@ -85,7 +85,7 @@ export function ClientsCRM() {
         </div>
       </div>
 
-      <div className="shell relative pb-[clamp(80px,10vw,148px)] pt-[clamp(170px,15vw,240px)]">
+      <div className="shell relative pb-[180px] pt-[clamp(170px,15vw,240px)] sm:pb-[clamp(80px,10vw,148px)]">
         <div className="grid gap-14 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
           {/* ---- Copy: narrow, left aligned, generous whitespace --------- */}
           <div className="max-w-[440px]">

@@ -156,13 +156,13 @@ export function SectionHead({ eyebrow, title, lede, align = "left", className = 
    - Words are split on spaces only. Punctuation stays attached to its word so
      a line never breaks between "work." and the next token.
    ------------------------------------------------------------------------- */
-export function ScrollReveal({ text, as: Tag = "h2", className = "", wordClassName = "" }) {
+export function ScrollReveal({ text, as: Tag = "h2", className = "", wordClassName = "", scrub = false }) {
   const ref = useRef(null);
   const reduced = useReducedMotion();
 
   useEffect(() => {
     const node = ref.current;
-    if (!node || reduced) return undefined;
+    if (!node || reduced || scrub) return undefined;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -175,12 +175,45 @@ export function ScrollReveal({ text, as: Tag = "h2", className = "", wordClassNa
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [reduced]);
+  }, [reduced, scrub]);
 
   const words = String(text).split(" ");
 
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || !scrub || reduced) return undefined;
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const top = node.getBoundingClientRect().top;
+      const viewport = window.innerHeight;
+      const progress = Math.max(0, Math.min(1, (viewport * 0.9 - top) / (viewport * 0.38)));
+      const wordNodes = node.querySelectorAll(".reveal-text > span");
+
+      wordNodes.forEach((wordNode, index) => {
+        const start = index / words.length;
+        const localProgress = Math.max(0, Math.min(1, (progress - start) * words.length));
+        wordNode.style.opacity = String(localProgress);
+        wordNode.style.transform = `translateY(${(1 - localProgress) * 72}%)`;
+      });
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [reduced, scrub, words.length]);
+
   return (
-    <Tag ref={ref} className={className}>
+    <Tag ref={ref} className={`${scrub ? "scroll-scrub" : ""} ${className}`}>
       {words.map((word, index) => (
         <span
           key={`${word}-${index}`}

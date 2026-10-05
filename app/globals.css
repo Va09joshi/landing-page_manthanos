@@ -698,11 +698,16 @@
   }
   .link-sweep:hover::after { transform: scaleX(1); transform-origin: left; }
 
-  /* Marquee / logo drift */
+  /* Marquee / logo drift.
+     The track holds two identical groups and shifts by exactly -50% (one full
+     group), which is what makes the loop seamless — never change this to a
+     percentage of anything other than the pair. Duration is tuned to the
+     group's width so the strip keeps a steady ~35px/s drift. */
   .marquee-track {
     display: flex;
     width: max-content;
-    animation: drift 48s linear infinite;
+    animation: drift 120s linear infinite;
+    will-change: transform;
   }
   @keyframes drift {
     from { transform: translateX(0); }
@@ -726,13 +731,36 @@
     padding: 12px 14px;
     font-size: 15px;
     color: var(--color-chalk);
+    /* Sunken well: dark cast inside from the top, faint light catching the
+       bottom lip — reads as a field carved into the glass. */
+    box-shadow:
+      inset 0 2px 6px rgba(2, 6, 16, 0.6),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+      0 1px 0 rgba(255, 255, 255, 0.04);
     transition: border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
   }
   .field::placeholder { color: var(--color-chalk-faint); }
   .field:focus {
     outline: none;
     border-color: var(--color-royal-400);
-    box-shadow: 0 0 0 4px rgba(36, 95, 245, 0.15);
+    box-shadow:
+      inset 0 2px 6px rgba(2, 6, 16, 0.6),
+      0 0 0 4px rgba(36, 95, 245, 0.18),
+      0 8px 20px -10px rgba(36, 95, 245, 0.55);
+  }
+
+  /* Keep autofilled values on the dark-glass treatment instead of the
+     browser's default white highlight. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #0d1424 inset;
+    -webkit-text-fill-color: var(--color-chalk);
+    caret-color: var(--color-chalk);
+    transition: background-color 9999s ease-out;
   }
   .field-label {
     display: block;
@@ -740,6 +768,47 @@
     font-weight: 500;
     color: var(--color-chalk-dim);
     margin-bottom: 6px;
+  }
+
+  /* ---- glass panel ------------------------------------------------------
+     The premium container for forms on a dark band: a frosted, blue-tinted
+     sheet with a lit top rim. backdrop-filter does the glass — the section
+     gradient behind it is what shows through the blur. The @supports fallback
+     keeps a near-identical opaque gradient where blur isn't available. */
+  .glass-panel {
+    position: relative;
+    border-radius: 20px;
+    background:
+      linear-gradient(158deg, rgba(22, 35, 62, 0.72) 0%, rgba(8, 13, 24, 0.82) 100%);
+    border: 1px solid rgba(148, 178, 255, 0.16);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    box-shadow:
+      inset 0 1px 0 rgba(214, 230, 255, 0.16),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+      inset 0 0 48px rgba(2, 6, 16, 0.4),
+      0 1px 0 rgba(148, 178, 255, 0.1),
+      0 10px 20px -12px rgba(1, 4, 12, 0.95),
+      0 34px 60px -24px rgba(1, 3, 10, 1),
+      0 64px 110px -40px rgba(1, 3, 10, 0.95),
+      0 0 64px -18px rgba(36, 95, 245, 0.38);
+  }
+
+  /* Lit seam across the top edge — the detail that reads as polished glass.
+     Inset from the corners so it fades before it reaches them. */
+  .glass-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 7%;
+    right: 7%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(190, 215, 255, 0.55), transparent);
+    pointer-events: none;
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-panel { background: linear-gradient(158deg, #16233e, #080d18); }
   }
 
   /* ---- status pills ---------------------------------------------------- */
@@ -986,6 +1055,188 @@
     100% { background-position: -60% 0, 0 0; }
   }
 
+  /* On phones the hero becomes a compact product story instead of a desktop
+     billboard squeezed into a narrow column. The rail explains the
+     illustration before it appears and gives the first screen a clear finish.
+
+     The strip is staged as a physical panel: the card leans back inside its
+     own transform-perspective, the four nodes are coins popped forward on Z
+     with a symmetric Y fan (nth-child rules below), and the rail is a lit
+     conduit instead of a flat dashed stroke. Keep `perspective` on .hero-flow —
+     without it the coin translateZ steps do nothing. */
+  .hero-flow {
+    position: relative;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    margin-bottom: -18px;
+    padding: 12px 10px;
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 14px;
+    background: rgba(10, 16, 28, .78);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .07),
+      0 18px 42px -24px rgba(0, 0, 0, .95),
+      0 0 26px -16px rgba(36, 95, 245, .8);
+    backdrop-filter: blur(12px);
+    perspective: 700px;
+    transform: perspective(900px) rotateX(6deg);
+    transform-origin: 50% 100%;
+  }
+
+  .hero-flow__step {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    color: var(--color-chalk-dim);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: .02em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
+  }
+
+  /* Lit conduit between coins: 2px tall, centred on the 26px coin midline,
+     fading out where it meets each coin's glow. */
+  .hero-flow__step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: calc(50% + 13px);
+    width: calc(100% - 26px);
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+      90deg,
+      rgba(111, 161, 255, .12),
+      rgba(111, 161, 255, .65) 18%,
+      rgba(111, 161, 255, .65) 82%,
+      rgba(111, 161, 255, .12)
+    );
+    box-shadow: 0 2px 6px rgba(36, 95, 245, .35);
+  }
+
+  .hero-flow__step > span {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    border: 1px solid rgba(111, 161, 255, .38);
+    border-radius: 50%;
+    background: linear-gradient(155deg, #1e3257 0%, #142445 55%, #0c1730 100%);
+    color: var(--color-signal);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .18),
+      inset 0 -5px 8px rgba(2, 8, 20, .55),
+      0 8px 14px -6px rgba(2, 8, 20, .9),
+      0 0 0 4px rgba(36, 95, 245, .08);
+  }
+
+  /* Fan across the rail: wings turned out, each coin stepped further forward
+     so the pipeline reads as depth instead of a flat timeline. */
+  .hero-flow__step:nth-child(1) > span { transform: translateZ(0) rotateY(14deg); }
+  .hero-flow__step:nth-child(2) > span { transform: translateZ(5px) rotateY(5deg); }
+  .hero-flow__step:nth-child(3) > span { transform: translateZ(10px) rotateY(-5deg); }
+  .hero-flow__step:nth-child(4) > span { transform: translateZ(15px) rotateY(-14deg); }
+
+  /* The published end of the pipeline carries the strongest glow. */
+  .hero-flow__step:last-child > span {
+    border-color: rgba(111, 161, 255, .6);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .22),
+      inset 0 -5px 8px rgba(2, 8, 20, .5),
+      0 8px 14px -6px rgba(2, 8, 20, .9),
+      0 0 0 4px rgba(36, 95, 245, .16),
+      0 0 18px -6px rgba(36, 95, 245, .9);
+  }
+
+  /* ---- hero trust row ------------------------------------------------------
+     The row under the hero CTA (phones): the three letters — Ideas, Projects,
+     Clients — drawn as coins fanned in real 3D. The container carries the
+     perspective, each coin is pushed forward on Z and turned on Y (angles are
+     set inline in components/hero.js; keep the leftmost coin frontmost, since
+     z-index and translateZ both descend left to right), and a brightness
+     falloff sells the distance. The green check rides along as a fourth coin
+     popped toward the viewer, so the whole row reads as one physical object
+     instead of flat stickers. */
+  .hero-stack {
+    display: inline-flex;
+    perspective: 640px;
+    perspective-origin: 50% 45%;
+  }
+
+  .hero-stack__disc {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 999px;
+    background: linear-gradient(155deg, #2b3b58 0%, #1a263c 55%, #101a2c 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .2),
+      inset 0 -7px 10px rgba(2, 8, 20, .5),
+      0 10px 18px -8px rgba(2, 8, 20, .95),
+      0 2px 4px rgba(2, 8, 20, .45);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .55);
+  }
+
+  .hero-stack__disc + .hero-stack__disc { margin-left: -8px; }
+  .hero-stack__disc:nth-child(2) { filter: brightness(.9); }
+  .hero-stack__disc:nth-child(3) { filter: brightness(.8); }
+
+  .hero-stack__check {
+    display: grid;
+    width: 24px;
+    height: 24px;
+    margin-left: 14px;
+    place-items: center;
+    border: 1px solid rgba(52, 211, 153, .5);
+    border-radius: 999px;
+    background: linear-gradient(155deg, rgba(52, 211, 153, .3), rgba(52, 211, 153, .08));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .3),
+      0 8px 16px -8px rgba(52, 211, 153, .55),
+      0 2px 4px rgba(2, 8, 20, .4);
+    color: var(--color-status-green);
+    transform: translateZ(14px) rotateY(-30deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes hero-stack-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .hero-stack { animation: hero-stack-bob 4.2s ease-in-out infinite; }
+  }
+
+  @media (max-width: 639px) {
+    .hero-scene::after {
+      content: "";
+      position: absolute;
+      right: -28%;
+      bottom: 4%;
+      width: 86vw;
+      height: 86vw;
+      border: 1px solid rgba(111, 161, 255, .08);
+      border-radius: 50%;
+      box-shadow: 0 0 0 34px rgba(36, 95, 245, .025), 0 0 0 68px rgba(36, 95, 245, .018);
+      pointer-events: none;
+    }
+
+    .hero-visual {
+      padding: 10px 0 0;
+    }
+  }
+
   /* ---- scroll text reveal ---------------------------------------------
      A word-by-word entrance driven by a CSS custom property that the
      ScrollReveal component writes as the section scrolls into view.
@@ -1015,12 +1266,91 @@
     transform: translateY(0);
   }
 
+  /* Body-copy reveals should read like words being printed, not like a second
+     oversized headline animation. The shorter travel and tighter stagger keep
+     the sentence fluid while it enters the reader's viewport. */
+  .trust-copy-word > span {
+    transform: translateY(72%);
+    opacity: 0;
+    transition-property: transform, opacity;
+    transition-duration: 520ms;
+    transition-delay: calc(var(--i, 0) * 24ms);
+  }
+
+  .is-revealed .trust-copy-word > span {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .scroll-scrub .reveal-text > span {
+    opacity: 0;
+    transform: translateY(72%);
+    transition: none;
+    will-change: transform, opacity;
+  }
+
+  /* Transparent scene artwork needs two kinds of depth: a crisp near shadow
+     that seats each cutout on the page and a broad directional shadow that
+     gives the central console real mass. */
+  .trust-workspace-art {
+    filter:
+      drop-shadow(0 3px 2px rgba(15, 23, 42, .22))
+      drop-shadow(0 11px 8px rgba(15, 23, 42, .24))
+      drop-shadow(0 28px 24px rgba(15, 23, 42, .30));
+  }
+
+  .role-tab-icon {
+    position: relative;
+    border: 1px solid #cbd5e1;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,.96) 0 42%, rgba(229,235,243,.92) 100%);
+    box-shadow:
+      inset 2px 2px 2px rgba(255,255,255,.95),
+      inset -3px -4px 6px rgba(86,104,130,.13),
+      0 4px 0 #c4cfdd,
+      0 9px 13px -7px rgba(31,48,73,.44);
+    transform: translateY(-2px) rotate(-3deg);
+  }
+
+  .role-tab-icon::after {
+    content: "";
+    position: absolute;
+    inset: 3px 5px auto;
+    height: 30%;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(255,255,255,.58), transparent);
+    pointer-events: none;
+  }
+
+  .role-tab-icon svg {
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 1px 1px rgba(15,23,42,.2));
+  }
+
+  .role-tab-icon--active {
+    border-color: color-mix(in srgb, var(--role-tone) 74%, white);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,.34), transparent 42%),
+      var(--role-tone);
+    box-shadow:
+      inset 2px 2px 2px rgba(255,255,255,.38),
+      inset -4px -5px 7px rgba(8,19,46,.22),
+      0 5px 0 color-mix(in srgb, var(--role-tone) 62%, #13294d),
+      0 11px 16px -8px color-mix(in srgb, var(--role-tone) 65%, transparent);
+    transform: translateY(-4px) rotate(-3deg);
+  }
+
   /* Without JS, or with motion reduced, the words are simply present.
      This is the default state on purpose: content first, motion second. */
   @media (prefers-reduced-motion: reduce) {
     .reveal-text > span {
       transform: none;
       transition: none;
+    }
+
+    .scroll-scrub .reveal-text > span {
+      opacity: 1;
     }
   }
 }

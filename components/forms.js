@@ -17,11 +17,11 @@ export function LeadForm({ demo = false }) {
     try { await api.lead({ ...form, source: demo ? "request-demo" : "contact" }); setState({ loading: false, done: true, error: "" }); setForm(initial); }
     catch (error) { setState({ loading: false, done: false, error: error.message }); }
   }
-  if (state.done) return <div className="rounded-2xl border border-[#b9e6cf] bg-[#effbf4] p-8 text-center"><div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-[#1c9b5c] text-white">✓</div><h3 className="display-font text-2xl font-bold">Request received.</h3><p className="mt-2 text-sm text-[#52647a]">We will be in touch soon.</p></div>;
-  return <form onSubmit={submit} className="space-y-4">{state.error && <p className="rounded-lg bg-[#fff0f0] p-3 text-sm text-[#b42318]">{state.error}</p>}<div className="grid gap-4 sm:grid-cols-2"><Field label="Name" name="name" value={form.name} onChange={update} required /><Field label="Work email" name="email" type="email" value={form.email} onChange={update} required /></div><Field label="Company or studio" name="company" value={form.company} onChange={update} /><label className="block text-sm font-medium text-[#17304d]">What are you working on?<textarea name="message" value={form.message} onChange={update} rows="5" className="mt-2 w-full resize-none rounded-xl border border-[#cdd9e6] bg-white px-4 py-3 outline-none focus:border-[#245ff5]" placeholder="Tell us a little about your team and workflow." /></label><button disabled={state.loading} className="w-full h-11 rounded-[10px] bg-[#245ff5] px-5 font-semibold text-white transition hover:bg-[#1b4de4] disabled:opacity-60">{state.loading ? "Sending..." : demo ? "Request a demo" : "Send message"}</button></form>;
+  if (state.done) return <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/10 p-8 text-center"><div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500 text-white shadow-[0_10px_24px_-10px_rgba(16,185,129,.8)]">✓</div><h3 className="display-font text-2xl font-bold text-chalk">Request received.</h3><p className="mt-2 text-sm text-white/65">We will be in touch soon.</p></div>;
+  return <form onSubmit={submit} className="space-y-4">{state.error && <p className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">{state.error}</p>}<div className="grid gap-4 sm:grid-cols-2"><Field label="Name" name="name" value={form.name} onChange={update} required /><Field label="Work email" name="email" type="email" value={form.email} onChange={update} required /></div><Field label="Company or studio" name="company" value={form.company} onChange={update} /><label className="block text-[13px] font-medium text-white/70">What are you working on?<textarea name="message" value={form.message} onChange={update} rows="5" className="mt-2 w-full resize-none rounded-xl border border-white/[.12] bg-white/[.05] px-4 py-3 text-[15px] text-chalk shadow-[inset_0_2px_6px_rgba(2,6,16,.6),inset_0_-1px_0_rgba(255,255,255,.05)] outline-none transition placeholder:text-white/35 focus:border-royal-400 focus:bg-white/[.07] focus:ring-4 focus:ring-royal-500/20" placeholder="Tell us a little about your team and workflow." /></label><button disabled={state.loading} className="w-full h-11 rounded-[10px] bg-royal-500 px-5 font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,.3),0_26px_50px_-18px_rgba(1,3,8,.98),0_12px_26px_-12px_rgba(1,3,8,.95),0_0_20px_-8px_rgba(36,95,245,.35)] transition active:translate-y-px hover:bg-royal-600 disabled:opacity-60">{state.loading ? "Sending..." : demo ? "Request a demo" : "Send message"}</button></form>;
 }
 
-function Field({ label, ...props }) { return <label className="block text-sm font-semibold text-[#17304d]">{label}<input {...props} className="mt-2 w-full rounded-xl border border-[#cdd9e6] bg-white px-4 py-3 text-[15px] text-[#11243d] shadow-[inset_0_1px_2px_rgba(15,37,68,.04)] outline-none transition-all duration-200 placeholder:text-[#9aa9bb] focus:border-[#245ff5] focus:ring-4 focus:ring-[#245ff5]/15" /></label>; }
+function Field({ label, ...props }) { return <label className="block text-[13px] font-medium text-white/70">{label}<input {...props} className="mt-2 w-full rounded-xl border border-white/[.12] bg-white/[.05] px-4 py-3 text-[15px] text-chalk shadow-[inset_0_2px_6px_rgba(2,6,16,.6),inset_0_-1px_0_rgba(255,255,255,.05)] outline-none transition-all duration-200 placeholder:text-white/35 focus:border-royal-400 focus:bg-white/[.07] focus:ring-4 focus:ring-royal-500/20" /></label>; }
 
 const workspaceApplicationInitial = {
   organizationName: "",
@@ -138,6 +138,10 @@ function ReviewRow({ label, value }) {
 }
 
 export function AuthForm({ mode }) {
+  // Hooks first — the early return below must not come before them.
+  const [form, setForm] = useState({ token: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   // Sign-in / self-registration are retired on the marketing site.
   // Workspaces are granted via application (register) or invite. If an old
   // link still lands here with mode="login", guide the visitor back to the
@@ -155,9 +159,6 @@ export function AuthForm({ mode }) {
       </div>
     );
   }
-  const [form, setForm] = useState({ token: "", password: "" });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   async function submit(event) {
     event.preventDefault();
     setLoading(true);
@@ -452,21 +453,21 @@ export function TesterForm() {
     catch (error) { setState({ loading: false, done: false, error: error.message }); }
   }
   
-  if (state.done) return <div className="rounded-2xl border border-[#b9e6cf] bg-[#effbf4] p-8 text-center"><div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-[#1c9b5c] text-white">?</div><h3 className="display-font text-2xl font-bold">Application received.</h3><p className="mt-2 text-sm text-[#52647a]">We'll let you know if you're selected for user testing.</p></div>;
+  if (state.done) return <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/10 p-8 text-center"><div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500 text-white">?</div><h3 className="display-font text-2xl font-bold text-chalk">Application received.</h3><p className="mt-2 text-sm text-white/65">We'll let you know if you're selected for user testing.</p></div>;
   
   return (
     <form onSubmit={submit} className="space-y-4">
-      {state.error && <p className="rounded-lg bg-[#fff0f0] p-3 text-sm text-[#b42318]">{state.error}</p>}
+      {state.error && <p className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">{state.error}</p>}
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Name" name="name" value={form.name} onChange={update} required />
         <Field label="Work email" name="email" type="email" value={form.email} onChange={update} required />
       </div>
       <Field label="Company or studio" name="company" value={form.company} onChange={update} />
       <Field label="Primary Use Case" name="useCase" value={form.useCase} onChange={update} placeholder="e.g. Content creation, Team management..." required />
-      <label className="block text-sm font-medium text-[#17304d]">Why do you want to test ManthanOS?
-        <textarea name="message" value={form.message} onChange={update} rows="4" className="mt-2 w-full resize-none rounded-xl border border-[#cdd9e6] bg-white px-4 py-3 outline-none focus:border-[#245ff5]" required />
+      <label className="block text-[13px] font-medium text-white/70">Why do you want to test ManthanOS?
+        <textarea name="message" value={form.message} onChange={update} rows="4" className="mt-2 w-full resize-none rounded-xl border border-white/[.12] bg-white/[.05] px-4 py-3 text-[15px] text-chalk shadow-[inset_0_2px_6px_rgba(2,6,16,.6),inset_0_-1px_0_rgba(255,255,255,.05)] outline-none transition placeholder:text-white/35 focus:border-royal-400 focus:ring-4 focus:ring-royal-500/20" required />
       </label>
-      <button disabled={state.loading} className="w-full h-11 rounded-[10px] bg-[#245ff5] px-5 font-semibold text-white transition hover:bg-[#1b4de4] disabled:opacity-60">{state.loading ? "Sending..." : "Apply for User Testing"}</button>
+      <button disabled={state.loading} className="w-full h-11 rounded-[10px] bg-[#245ff5] px-5 font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,.3),0_26px_50px_-18px_rgba(1,3,8,.98),0_12px_26px_-12px_rgba(1,3,8,.95),0_0_20px_-8px_rgba(36,95,245,.35)] transition active:translate-y-px hover:bg-[#1b4de4] disabled:opacity-60">{state.loading ? "Sending..." : "Apply for User Testing"}</button>
     </form>
   );
 }

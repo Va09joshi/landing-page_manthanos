@@ -36,17 +36,17 @@ export default function Contact() {
               {/* Routes as an open list, not cards */}
               <div>
                 <p className="eyebrow">Faster routes</p>
-                <div className="mt-8 border-t border-[#dbe5f4]">
+                <div className="mt-8 border-t border-white/10">
                   {routes.map((route) => (
                     <Reveal key={route.action}>
-                      <div className="group border-b border-[#dbe5f4] py-7">
-                        <h2 className="text-[17px] font-medium text-slate-ink">{route.label}</h2>
-                        <p className="mt-2.5 max-w-[44ch] text-[14.5px] leading-6 text-slate-dim">
+                      <div className="group border-b border-white/10 py-7">
+                        <h2 className="text-[17px] font-medium text-chalk">{route.label}</h2>
+                        <p className="mt-2.5 max-w-[44ch] text-[14.5px] leading-6 text-chalk-dim">
                           {route.body}
                         </p>
                         <a
                           href={route.href}
-                          className="mt-4 inline-flex items-center gap-2 text-[14px] font-medium text-royal-600 transition-colors hover:text-royal-700"
+                          className="mt-4 inline-flex items-center gap-2 text-[14px] font-medium text-royal-400 transition-colors hover:text-soft"
                         >
                           {route.action}
                           <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
@@ -58,16 +58,16 @@ export default function Contact() {
                   ))}
                 </div>
 
-                <p className="mt-10 max-w-[42ch] text-[13.5px] leading-6 text-slate-dim">
+                <p className="mt-10 max-w-[42ch] text-[13.5px] leading-6 text-chalk-dim">
                   Workspace applications go to a review queue before anything is created, so you will
                   hear back with specifics rather than an autoresponder.
                 </p>
               </div>
 
               <Reveal delay={0.08}>
-                <div className="plate-paper p-8 sm:p-9">
-                  <h2 className="text-[21px] font-semibold text-slate-ink">Send a message</h2>
-                  <p className="mt-2.5 text-[14px] text-slate-dim">
+                <div className="glass-panel p-8 sm:p-9">
+                  <h2 className="text-[21px] font-semibold text-chalk">Send a message</h2>
+                  <p className="mt-2.5 text-[14px] text-chalk-dim">
                     All fields marked required are needed to route your message.
                   </p>
                   <div className="mt-8">

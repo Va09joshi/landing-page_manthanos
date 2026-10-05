@@ -4,6 +4,7 @@ import { PageHead, Reveal, SectionHead, StatusPill } from "../../components/ui";
 import { ModuleBento } from "../../components/module-bento";
 import { PipelineRail } from "../../components/pipeline-rail";
 import { WorkspaceShowcase } from "../../components/workspace-showcase";
+import { PlatformIcon } from "../../components/platform-icon";
 import { platforms } from "../../lib/product";
 import { pageMetadata } from "../../lib/site";
 
@@ -120,24 +121,39 @@ export default function Features() {
           </div>
         </section>
 
-        {/* Channels: a marquee of real platform options, not borrowed logos */}
+        {/* Channels: a marquee of the real platform marks a workspace can connect to.
+            The track holds two identical groups (chips repeated inside each group so one
+            group alone is wider than any realistic viewport). Each group carries its own
+            gap + trailing pad, so translateX(-50%) lands exactly on the seam and the loop
+            repeats forever with no jump and no empty stretch. */}
         <section className="band-paper band-pad-sm relative">
           <div className="shell relative">
             <p className="eyebrow">Connected platforms</p>
-            <p className="mt-4 max-w-[46ch] text-[14.5px] leading-6 text-slate-dim">
+            <p className="mt-4 max-w-[46ch] text-[14.5px] leading-6 text-chalk-dim">
               Channels and platform accounts are first-class records. These are the platforms a
               workspace can be connected to.
             </p>
           </div>
           <div className="marquee-mask mt-10 overflow-hidden">
-            <div className="marquee-track gap-3">
-              {[...platforms, ...platforms].map((platform, index) => (
-                <span
-                  key={`${platform}-${index}`}
-                  className="whitespace-nowrap rounded-[10px] border border-[#dbe5f4] bg-white px-5 py-3 text-[14px] font-medium text-slate-ink"
+            <div className="marquee-track">
+              {[0, 1].map((group) => (
+                <div
+                  key={group}
+                  className="flex shrink-0 gap-3 pr-3"
+                  aria-hidden={group === 1 ? "true" : undefined}
                 >
-                  {platform}
-                </span>
+                  {[...platforms, ...platforms, ...platforms].map((platform, index) => (
+                    <span
+                      key={`${platform}-${index}`}
+                      className="inline-flex items-center gap-3 whitespace-nowrap rounded-[14px] border border-[#dbe5f4] bg-white px-5 py-3.5 shadow-[0_14px_30px_-18px_rgba(2,8,20,.55)]"
+                    >
+                      <PlatformIcon platform={platform} className="h-7 w-7 shrink-0" />
+                      <span className="text-[15px] font-semibold tracking-[-0.01em] text-ink-950">
+                        {platform}
+                      </span>
+                    </span>
+                  ))}
+                </div>
               ))}
             </div>
           </div>

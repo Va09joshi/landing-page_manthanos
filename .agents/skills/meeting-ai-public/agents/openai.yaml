@@ -1,0 +1,4 @@
+interface:
+  display_name: "Meeting AI Public Content"
+  short_description: "Write accurate public meeting AI content"
+  default_prompt: "Use $meeting-ai-public to update public copy for ManthanOS meeting transcription and summaries."

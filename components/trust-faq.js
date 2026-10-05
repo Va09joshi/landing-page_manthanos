@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Check, Eye, Globe2, Minus, Plus, ShieldCheck, UserRound } from "lucide-react";
-import { infrastructure, portals } from "../lib/product";
+import { infrastructure } from "../lib/product";
 import { faqs } from "../lib/faq";
 import { Reveal, ScrollReveal, SectionHead } from "./ui";
 
@@ -22,20 +22,35 @@ export function TrustSection() {
   const [activePortal, setActivePortal] = useState(0);
   const reduceMotion = useReducedMotion();
   const roleViews = [
-    { label: "Admin", Icon: ShieldCheck, access: "Full workspace", visible: ["Projects", "Team", "Permissions", "Settings"], tone: "#245FF5" },
-    { label: "Employee", Icon: UserRound, access: "Assigned work", visible: ["My phases", "My tasks", "Team chat"], tone: "#7C5CFC" },
-    { label: "Public", Icon: Globe2, access: "Public website", visible: ["Product", "Pricing", "Workspace request"], tone: "#12A36D" },
+    {
+      label: "Admin",
+      Icon: ShieldCheck,
+      access: "Full workspace",
+      summary: "Runs the whole operating system.",
+      explanation: "Admins connect projects, people and permissions. They can see every handoff, unblock work and change how the workspace is organised.",
+      visible: ["Projects", "Team", "Permissions", "Settings"],
+      tone: "#245FF5",
+    },
+    {
+      label: "Employee",
+      Icon: UserRound,
+      access: "Assigned work",
+      summary: "Sees a focused daily lane.",
+      explanation: "Employees open only the phases and tasks assigned to them, with the files, conversations and due dates needed to finish the work.",
+      visible: ["My phases", "My tasks", "Team chat"],
+      tone: "#7C5CFC",
+    },
+    {
+      label: "Creator",
+      Icon: Globe2,
+      access: "Public presence",
+      summary: "Turns finished work into a public story.",
+      explanation: "Creators shape the public-facing product, publish content and guide new clients from discovery to a workspace request without exposing internal operations.",
+      visible: ["Product", "Content", "Pricing", "Workspace request"],
+      tone: "#12A36D",
+    },
   ];
   const activeRole = roleViews[activePortal];
-
-  useEffect(() => {
-    if (reduceMotion) return undefined;
-    const timer = window.setInterval(
-      () => setActivePortal((current) => (current + 1) % roleViews.length),
-      3200,
-    );
-    return () => window.clearInterval(timer);
-  }, [reduceMotion, roleViews.length]);
 
   return (
     /* The one light band on the page.
@@ -66,12 +81,15 @@ export function TrustSection() {
                   as="h2"
                   text="Built on a structured model, not on spreadsheets"
                   className="mt-5 text-[clamp(26px,3.3vw,42px)] font-semibold leading-[1.08] text-ink-950"
+                  scrub
                 />
-                <p className="mt-5 max-w-[46ch] text-[16px] leading-8 text-[#4A5568]">
-                  Every record in ManthanOS has a type, an owner and a history, so
-                  a status is read from the system rather than typed into it by
-                  whoever has time that week.
-                </p>
+                <ScrollReveal
+                  as="p"
+                  text="Every record in ManthanOS has a type, an owner and a history, so a status is read from the system rather than typed into it by whoever has time that week."
+                  className="mt-5 max-w-[46ch] text-[16px] leading-8 text-[#4A5568]"
+                  wordClassName="trust-copy-word"
+                  scrub
+                />
               </div>
             </Reveal>
 
@@ -79,10 +97,10 @@ export function TrustSection() {
               <div
                 role="tablist"
                 aria-label="Portal view"
-                className="mt-10 grid overflow-hidden rounded-[14px] border border-black/[.1] bg-[#E5EAF1] p-px shadow-[0_12px_30px_-26px_rgba(15,23,42,.5)] sm:grid-cols-3"
+                className="role-tabs mt-10 grid grid-cols-3 gap-2 rounded-[20px] border border-[#CCD5E1] bg-[#DCE3EC] p-2 shadow-[inset_0_2px_6px_rgba(15,23,42,.14),0_16px_34px_-26px_rgba(15,23,42,.55)]"
               >
-                {portals.map((portal, index) => {
-                  const RoleIcon = roleViews[index].Icon;
+                {roleViews.map((portal, index) => {
+                  const RoleIcon = portal.Icon;
                   const active = index === activePortal;
                   return (
                   <button
@@ -91,62 +109,67 @@ export function TrustSection() {
                     key={portal.label}
                     onClick={() => setActivePortal(index)}
                     aria-selected={active}
-                    className={`relative p-5 text-left transition duration-300 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-royal-500/40 ${active ? "z-[1] bg-white shadow-[0_8px_22px_-14px_rgba(15,23,42,.42),inset_0_-2px_0_#245FF5]" : "bg-[#F8FAFC] hover:bg-white"}`}
+                    className={`role-tab relative min-w-0 rounded-[14px] px-2.5 py-3 text-left transition-[transform,background-color,box-shadow,color] duration-300 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-royal-500/40 sm:p-5 ${active ? "role-tab--active z-[1] -translate-y-1 bg-white shadow-[0_7px_0_#B8C5D5,0_15px_24px_-15px_rgba(15,23,42,.55),inset_0_1px_0_white]" : "translate-y-0 bg-[#EEF2F7] shadow-[inset_0_1px_2px_rgba(15,23,42,.12)] hover:bg-[#F7F9FC]"}`}
                   >
-                    <span className={`mb-4 flex h-8 w-8 items-center justify-center rounded-lg transition ${active ? "bg-royal-600 text-white" : "bg-[#F1F4F8] text-[#6B7688]"}`}><RoleIcon size={15} /></span>
-                    <p className="text-[14px] font-semibold text-ink-950">{portal.label}</p>
-                    <p className="mt-2 text-[12.5px] leading-5 text-[#4A5568]">{portal.detail}</p>
+                    <span
+                      className={`role-tab-icon mb-2.5 flex h-10 w-10 items-center justify-center rounded-[11px] transition sm:mb-4 ${active ? "role-tab-icon--active text-white" : "text-[#607086]"}`}
+                      style={{ "--role-tone": portal.tone }}
+                    ><RoleIcon size={16} strokeWidth={2.2} /></span>
+                    <p className="truncate text-[12px] font-bold text-ink-950 sm:text-[14px]">{portal.label}</p>
+                    <p className="mt-1 hidden text-[12px] leading-5 text-[#5D6C80] sm:block">{portal.summary}</p>
+                    {active && <motion.span layoutId="role-active-edge" className="absolute inset-x-4 bottom-0 h-[3px] rounded-t-full" style={{ backgroundColor: portal.tone }} />}
                   </button>
                   );
                 })}
               </div>
             </Reveal>
 
-            <Reveal delay={0.16}>
-              <p className="mt-8 max-w-[50ch] text-[13.5px] leading-6 text-[#6B7688]">
-                Each person sees the portal built for their role. An employee opens
-                My Phases and nothing else; an admin holds the whole workspace.
-              </p>
-            </Reveal>
+            <div className="mt-7 min-h-[190px]">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={activeRole.label}
+                  initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
+                  transition={{ duration: .32, ease: [0.22, 1, 0.36, 1] }}
+                  className="border-t border-[#CDD6E2] pt-5"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="role-tab-icon role-tab-icon--active grid h-10 w-10 place-items-center rounded-[11px] text-white" style={{ "--role-tone": activeRole.tone }}><activeRole.Icon size={16} strokeWidth={2.2} /></span>
+                    <div>
+                      <p className="font-mono text-[9px] font-bold uppercase tracking-[.15em] text-[#7A8798]">How {activeRole.label} works</p>
+                      <p className="mt-0.5 text-[16px] font-bold text-[#14213A]">{activeRole.summary}</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-[14px] leading-6 text-[#536277]">{activeRole.explanation}</p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Capability grid — ink on paper, matching the band */}
           <Reveal delay={0.08}>
             <div>
-              <div className="relative isolate min-h-[430px] sm:min-h-[510px]">
+              <div className="relative isolate min-h-[280px] sm:min-h-[390px]">
                 {/* The artwork is transparent, so a single large drop-shadow makes
                     every cutout look smoky. These two ellipses do separate jobs:
                     the wide one gives the scene atmosphere, while the narrow one
                     creates a believable contact point under the floating object. */}
-                <motion.div
-                  aria-hidden
-                  className="absolute inset-x-[10%] bottom-[9%] h-[14%] rounded-[50%] bg-black/30 blur-[34px]"
-                  animate={reduceMotion ? undefined : { opacity: [.5, .3, .5], scaleX: [1, .9, 1], scaleY: [1, .82, 1] }}
-                  transition={{ duration: 7.2, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <motion.div
-                  aria-hidden
-                  className="absolute inset-x-[24%] bottom-[11%] h-[6%] rounded-[50%] bg-black/55 blur-[14px]"
-                  animate={reduceMotion ? undefined : { opacity: [.68, .42, .68], scaleX: [1, .84, 1] }}
-                  transition={{ duration: 7.2, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <motion.div
-                  className="absolute inset-x-0 top-0 origin-[52%_70%] will-change-transform"
-                  animate={reduceMotion ? undefined : { y: [0, -10, 0], rotate: [0, .35, 0], scale: [1, 1.008, 1] }}
-                  transition={{ duration: 7.2, repeat: Infinity, ease: [0.45, 0, 0.55, 1] }}
-                >
+                <div aria-hidden className="absolute inset-x-[5%] bottom-[7%] h-[18%] rounded-[50%] bg-[#152238]/20 blur-[38px]" />
+                <div aria-hidden className="absolute bottom-[13%] left-1/2 h-[11%] w-[58%] -translate-x-1/2 rounded-[50%] bg-black/35 blur-[20px]" />
+                <div aria-hidden className="absolute bottom-[17%] left-1/2 h-[5%] w-[36%] -translate-x-1/2 rounded-[50%] bg-black/55 blur-[9px]" />
+                <div className="absolute inset-x-0 top-0">
                   <Image
                     src="/illustrations/Connected Creative Workflow Hub.png"
                     alt="A connected creative team working through one shared ManthanOS workspace"
                     width={1674}
                     height={943}
                     sizes="(max-width: 1024px) 92vw, 52vw"
-                    className="h-auto w-full object-contain"
-                    style={{ filter: "drop-shadow(0 5px 4px rgba(0, 0, 0, .18)) drop-shadow(0 22px 17px rgba(0, 0, 0, .28))" }}
+                    className="trust-workspace-art h-auto w-full object-contain"
                   />
-                </motion.div>
+                </div>
 
-                <div className="absolute bottom-2 left-1/2 w-[min(94%,430px)] -translate-x-1/2 sm:bottom-4">
+                <div className="hidden">
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                       key={activeRole.label}

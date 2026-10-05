@@ -116,14 +116,14 @@ export default function UseCases() {
                   </div>
 
                   {/* Live record panel: the data this team actually works with */}
-                  <div className="plate-paper self-start p-7">
-                    <p className="mono-label text-slate-dim">What it looks like</p>
+                  <div className="glass-panel self-start p-7">
+                    <p className="mono-label text-chalk-dim">What it looks like</p>
                     <dl className="mt-6 space-y-5">
                       {useCase.metrics.map(([label, name, value]) => (
-                        <div key={name} className="border-b border-[#eaf0f9] pb-5 last:border-0 last:pb-0">
-                          <dt className="font-mono text-[10px] uppercase tracking-[.12em] text-slate-dim">{label}</dt>
-                          <dd className="mt-2 text-[15px] font-medium text-slate-ink">{name}</dd>
-                          <dd className="mt-1 text-[13.5px] leading-6 text-slate-dim">{value}</dd>
+                        <div key={name} className="border-b border-white/10 pb-5 last:border-0 last:pb-0">
+                          <dt className="font-mono text-[10px] uppercase tracking-[.12em] text-signal">{label}</dt>
+                          <dd className="mt-2 text-[15px] font-medium text-chalk">{name}</dd>
+                          <dd className="mt-1 text-[13.5px] leading-6 text-chalk-dim">{value}</dd>
                         </div>
                       ))}
                     </dl>
